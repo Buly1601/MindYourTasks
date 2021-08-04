@@ -3,26 +3,30 @@ from flask import Flask, render_template, request
 
 
 app = Flask(__name__)
-
+#export FLASK_ENV=development
+#flask run
 @app.route("/main")
 def main():
     """
     Returns the main page of the app, where basic info and options as well as contact
-    is provided 
+    is provided
     """
     return render_template("index.html", title="Intro Screen", url=os.getenv("URL"))
 
-@app.route("/login", methods=["POST"])
+
+@app.route("/login", methods=("GET", "POST"))
 def login():
-    #TODO
+    # TODO
 
     return render_template("login.html", title="Login", url=os.getenv("URL"))
 
-@app.route("/register", methods=["POST"])
+
+@app.route("/register", methods=("GET", "POST"))
 def register():
-    #TODO
+    # TODO
 
     return render_template("register.html", title="Register", url=os.getenv("URL"))
+
 
 @app.route("/health")
 def healthy():
