@@ -1,18 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>login mock</title>
-</head>
-<body>
-    <form action="" method="POST">
-        <label>Username</label><br>
-        <input name="username" type="email" placeholder="input username"><br><br>
-        <label>Password</label>
-        <input name="password" type="password" placeholder="input password"><br><br>
-        <input type="submit" value="LOGIN">
-    </form>
-</body>
-</html>
+{% extends "base.html" %} {% block content %}
+<h3 class="title">Login</h3>
+<div class="loginBox">
+  <img class="petImage" src="../static/images/cuteCat2.gif" />
+  <form class="formBoxLogin" action="" method="POST">
+    <label>Username</label>
+    <input
+      name="username"
+      type="email"
+      class="loginInput"
+      placeholder="Username"
+    />
+    <label>Password</label>
+    <input
+      name="password"
+      type="password"
+      class="loginInput"
+      placeholder="password"
+    />
+    <input class="inputButton" value="Login" type="submit" />
+    <a class="links" aria-current="page" href="/register">Register</a>
+  </form>
+</div>
+
+{% endblock %}

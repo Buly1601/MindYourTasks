@@ -5,6 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
 
 app = Flask(__name__)
+
 db.init_app(app)
 app.config["DATABASE"] = os.path.join(os.getcwd(), "flask.sqlite")
 
@@ -26,6 +27,8 @@ with app.app_context():
             return "Username is required."
         elif error == "password":
             return "Password is required."
+        elif error == "confPassword":
+            return "Passwords must match."
 
     @app.route("/register", methods=["GET","POST"])
     def register():
@@ -36,12 +39,18 @@ with app.app_context():
             dab = db.get_db() 
             username = request.form.get("username")
             password = request.form.get("password")
+            confPassword = request.form.get("confPassword")
+            
+            
+            print(confPassword)
             error = None
 
             if not username:
                 error = error_caller("username")
             elif not password:
                 error = error_caller("password")
+            if password != confPassword:
+                error = error_caller("confPassword")
             elif dab.execute(
                 "SELECT * FROM user_info WHERE Username = ?", (username,)
             ).fetchone() != None:
