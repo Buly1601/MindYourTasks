@@ -1,7 +1,7 @@
 *{
     margin: 0;
     padding: 0;
-    font-family: sans-serif;
+    font-family: 'Source Code Pro', monospace;
     font-weight: bold;
 }
 
@@ -149,6 +149,21 @@ h1{
     width: 40px;
 }
 .animals img:nth-child(7){
+
     animation-delay: 5s;
     width: 40px;
 }
+
+a{
+    color: white;
+    text-decoration: none;
+}
+
+a:visited{
+    text-decoration: none;
+    color: white;
+}
+a:hover{cursor: pointer;}
+
+}
+
