@@ -1,3 +1,7 @@
+*{
+    font-family: 'Source Code Pro', monospace;
+}
+
 body{
     font-family: Arial, sans-serif;
     background-image: url('../images/background.jpg');
@@ -9,6 +13,7 @@ body{
 .title{
     font-size: 80px;
     margin-left: 5%;
+    font-family: 'Source Code Pro', monospace;
 }
 .formBox, .formBoxLogin{
     display: flex;
@@ -63,4 +68,8 @@ body{
         width: 15%;
         margin: 0 42.5%;
     }
+}
+
+input:focus{
+    outline: none;
 }

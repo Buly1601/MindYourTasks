@@ -11,13 +11,13 @@ app.config["DATABASE"] = os.path.join(os.getcwd(), "flask.sqlite")
 
 with app.app_context():
 
-    @app.route("/main")
+    @app.route("/")
     def main():
         """
         Returns the main page of the app, where basic info and options as well as contact
         is provided 
         """
-        return render_template("base.html", title="Intro Screen", url=os.getenv("URL"))
+        return render_template("index.html", title="Intro Screen", url=os.getenv("URL"))
 
     def error_caller(error):
         """
