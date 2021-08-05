@@ -26,7 +26,7 @@
 }
 
 .navbar{
-    width: 85%;
+    width: 95%;
     height: 15%;
     display: flex;
     align-items: center;
@@ -87,7 +87,7 @@ h1{
 }
 @keyframes conten {
     0%{
-        transform: translateX(-100px);
+        transform: translateX(-800px);
         visibility: visible;
     }
     100%{
@@ -128,14 +128,15 @@ h1{
 }
 .animals img:nth-child(1){
     animation-delay: 1s;
-    width: 35px;
+    width: 40px;
 }
 .animals img:nth-child(2){
+    width: 35px;
     animation-delay: 4s;
 }
 .animals img:nth-child(3){
     animation-delay: 2.5s;
-    width: 30px;
+
 }
 .animals img:nth-child(4){
     animation-delay: 1.5s;
@@ -149,5 +150,5 @@ h1{
 }
 .animals img:nth-child(7){
     animation-delay: 5s;
-    width: 45px;
+    width: 40px;
 }
