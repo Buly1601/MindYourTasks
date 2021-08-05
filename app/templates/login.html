@@ -17,6 +17,11 @@
       class="loginInput"
       placeholder="password"
     />
+    <div class="errorBox">
+        {% for message in get_flashed_messages() %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    </div>
     <input class="inputButton" value="Login" type="submit" />
     <a class="links" aria-current="page" href="/register">Register</a>
   </form>

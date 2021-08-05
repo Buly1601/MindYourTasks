@@ -1,6 +1,6 @@
 import os
 import sqlite3
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
 
@@ -8,6 +8,7 @@ app = Flask(__name__)
 
 db.init_app(app)
 app.config["DATABASE"] = os.path.join(os.getcwd(), "flask.sqlite")
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 with app.app_context():
 
@@ -35,14 +36,12 @@ with app.app_context():
         """
         Regiters into db the new user with username and  hashes with sha-21 the password
         """
+        
         if request.method == "POST":
             dab = db.get_db() 
             username = request.form.get("username")
             password = request.form.get("password")
             confPassword = request.form.get("confPassword")
-            
-            
-            print(confPassword)
             error = None
 
             if not username:
@@ -61,11 +60,12 @@ with app.app_context():
                     "INSERT INTO user_info (Username, Password) VALUES (?, ?)",
                     (username, generate_password_hash(password),))
                 dab.commit()
-
-                return f"User {username} created successfully"
+                
+                return redirect(url_for('login'))
 
             else:
-                return error, 418
+                flash(error)
+                return render_template("register.html", title="Register", url=os.getenv("URL"))
 
         else:
             return render_template("register.html", title="Register", url=os.getenv("URL"))
@@ -97,9 +97,10 @@ with app.app_context():
                 error = "Incorrect password"
 
             if error:
-                return error, 418
+                flash(error)
+                return render_template("login.html", title="Login", url=os.getenv("URL"))
         
-            return "Login successfull"
+            return redirect(url_for('todo'))
 
         else:
             return render_template("login.html", title="Login", url=os.getenv("URL"))
@@ -110,6 +111,13 @@ with app.app_context():
         Health function for life checking
         """
         return "Healthy as it should."
+    
+    @app.route("/todo")
+    def todo():
+        """
+        Health function for life checking
+        """
+        return render_template('todo.html', title="To Do", url=os.getenv("URL"))
 
 
 if __name__ == "__main__":
