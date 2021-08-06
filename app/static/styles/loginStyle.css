@@ -10,11 +10,7 @@ body{
     background-repeat: no-repeat;
     color:white;
 }
-.title{
-    font-size: 80px;
-    margin-left: 5%;
-    font-family: 'Source Code Pro', monospace;
-}
+
 .formBox, .formBoxLogin{
     display: flex;
     flex-direction: column;
@@ -45,6 +41,15 @@ body{
     justify-content: space-between;
     width: 90%;
     margin:5%;
+}
+.errorBox{
+    color:#5d0217;
+    font-size: larger;
+    font-weight: bolder;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
 }
 .petImage{
     width: 25%;
