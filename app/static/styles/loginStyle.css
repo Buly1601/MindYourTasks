@@ -1,0 +1,80 @@
+*{
+    font-family: 'Source Code Pro', monospace;
+}
+
+body{
+    font-family: Arial, sans-serif;
+    background-image: url('../images/background.jpg');
+    /*art by choops91 devian art*/
+    background-size: cover;
+    background-repeat: no-repeat;
+    color:white;
+}
+
+.formBox, .formBoxLogin{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+}
+.loginInput, .inputButton{
+    width: 90%;
+    height: 40px;
+    border-radius: 30px;
+    margin: 15px 0;
+    background-color: #685044;
+}
+.inputButton{
+    margin: 25px;
+    width: 20%;
+    align-self: center;
+    color:white;
+}
+.links{
+    align-self: center;
+    color:white;
+    text-decoration: none;
+    font-style: italic;
+}
+.loginBox,.registerBox{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 90%;
+    margin:5%;
+}
+.errorBox{
+    color:#5d0217;
+    font-size: larger;
+    font-weight: bolder;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+}
+.petImage{
+    width: 25%;
+    margin: 0;
+}
+
+@media only screen and (max-width:900px) {
+    .loginBox,.registerBox{
+        flex-direction: column;
+    }
+    .title{
+        font-size: 70px;
+        margin: 10px 15%;
+    }
+    .formBox, .formBoxLogin{
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+    .petImage{
+        width: 15%;
+        margin: 0 42.5%;
+    }
+}
+
+input:focus{
+    outline: none;
+}
