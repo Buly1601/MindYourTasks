@@ -12,7 +12,7 @@ app = Flask(__name__)
 db.init_app(app)
 app.config["DATABASE"] = os.path.join(os.getcwd(), "flask.sqlite")
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///flask.sqlite'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///k.sqlite'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 d = SQLAlchemy(app)
@@ -21,17 +21,29 @@ class Task(d.Model):
     id = d.Column(d.Integer, primary_key=True)
     content = d.Column(d.Text)
     done = d.Column(d.Boolean, default=False)
-    #user = d.Column(d.Integer, primary_key=True)
+    owner = d.Column(d.Text, nullable=False)
 
-    def __init__(self, content):
+    def __init__(self, content, owner):
         self.content = content
         self.done = False
+        self.owner = owner
 
     def __repr__(self):
-        return '<Content %s>' % self.content
+        return '<Content %s>' % self.owner
+
 class User(d.Model):
+
     id = d.Column(d.Integer, primary_key=True)
-    #tasks = d.Column(Task)
+    username = d.Column(d.String(120))
+    password = d.Column(d.String(120))
+    #tasks = d.relationship('Task', backref='owner')
+
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
+
+    def __repr__(self):
+        return '<User %r>' % self.username
 
 d.create_all()
 
@@ -68,6 +80,14 @@ with app.app_context():
             username = request.form.get("username")
             password = request.form.get("password")
             confPassword = request.form.get("confPassword")
+            #existing_user = User.query.filter_by(username=username).first()
+            #if not existing_user:
+            '''username2 = request.form['username']
+            password2 = request.form['password']
+            new_user = User(username2, password2)
+            d.session.add(new_user)'''
+            #d.session.commit()
+            session['username'] = username
             error = None
 
             if not username:
@@ -88,7 +108,6 @@ with app.app_context():
                 dab.commit()
 
                 return redirect(url_for('login'))
-
             else:
                 flash(error)
                 return render_template("register.html", title="Register", url=os.getenv("URL"))
@@ -105,11 +124,14 @@ with app.app_context():
         if request.method == "POST":
             dab = db.get_db()
             username = request.form.get("username")
-            taskuser = request.form['username']
-            d.session.add(taskuser)
-            d.session.commit()
             password = request.form.get("password")
             error = None
+
+            #user = User.query.filter_by(username=username).first()
+            '''if user and user.password == password:
+                session['username'] = username
+                flash("Logged in")
+                return redirect(url_for('todo'))'''
 
             if not username:
                 error = error_caller("username")
@@ -130,11 +152,23 @@ with app.app_context():
                 flash(error)
                 return render_template("login.html", title="Login", url=os.getenv("URL"))
 
+            '''if user and user.password == password:
+                session['username'] = username
+                flash("Logged in")
+                return redirect(url_for('todo'))'''
+            session['username'] = username
+
+
             return redirect(url_for('todo'))
 
         else:
             return render_template("login.html", title="Login", url=os.getenv("URL"))
 
+
+    @app.route('/logout')
+    def logout():
+        del session['username']
+        return redirect('/')
 
     @app.route("/health")
     def healthy():
@@ -144,24 +178,52 @@ with app.app_context():
         return "Healthy as it should."
 
 
-    @app.route("/todo")
+    @app.route("/todo", methods=["GET", "POST"])
     def todo():
         """
         Health function for life checking
         """
-        tasks = Task.query.all()
+
+        username = session['username']
+        #owner = User.query.filter_by(username=session['username']).first()
+
+        tasks = Task.query.filter_by(done=False, owner=username).all()
+        #completed_tasks = Task.query.filter_by(done=True, owner=username).all()
+        #tasks = Task.query.all()
         return render_template('todo.html', tasks=tasks, url=os.getenv("URL"))
-        #return render_template('todo.html', title="To Do", url=os.getenv("URL"))
+
+
+
+    '''@app.route('/todo', methods=['POST', 'GET'])
+    def todo():
+        dab = db.get_db()
+        username = session['username']
+        #owner = User.query.filter_by(email=session['username']).first()
+
+        if request.method == 'POST':
+            task_name = request.form['content']
+            new_task = Task(task_name, username)
+            print(username)
+            d.session.add(new_task)
+            d.session.commit()
+
+        tasks = Task.query.filter_by(done=False, owner=username).all()
+        completed_tasks = Task.query.filter_by(done=True, owner=username).all()
+        return render_template('todo.html', title="Get It Done!",
+                               tasks=tasks, completed_tasks=completed_tasks)'''
+
 '''----------------------------------------------------------'''
 
 @app.route('/task', methods=['POST'])
 def add_task():
+    #owner = User.query.filter_by(username=session['username']).first()
     content = request.form['content']
     if not content:
         return 'Error'
 
+    username = session['username']
 
-    task = Task(content)
+    task = Task(content, username)
     d.session.add(task)
     d.session.commit()
     return redirect(url_for('todo'))
