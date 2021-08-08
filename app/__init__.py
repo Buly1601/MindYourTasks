@@ -189,30 +189,12 @@ with app.app_context():
         owner = User.query.filter_by(username=username).first()
         #owner = User.query.filter_by(username=session['username']).first()
 
-        tasks = Task.query.filter_by(done=False, owner=owner).all()
-        completed_tasks = Task.query.filter_by(done=True, owner=owner).all()
+        #tasks = Task.query.filter_by(done=False, owner=owner).all()
+        tasks = Task.query.filter_by(owner=owner).all()
+        #completed_tasks = Task.query.filter_by(done=True, owner=owner).all()
         #tasks = Task.query.all()
-        return render_template('todo.html', tasks=tasks, completed_tasks=completed_tasks, url=os.getenv("URL"))
+        return render_template('todo.html', tasks=tasks, url=os.getenv("URL"))
 
-
-
-    '''@app.route('/todo', methods=['POST', 'GET'])
-    def todo():
-        dab = db.get_db()
-        username = session['username']
-        #owner = User.query.filter_by(email=session['username']).first()
-
-        if request.method == 'POST':
-            task_name = request.form['content']
-            new_task = Task(task_name, username)
-            print(username)
-            d.session.add(new_task)
-            d.session.commit()
-
-        tasks = Task.query.filter_by(done=False, owner=username).all()
-        completed_tasks = Task.query.filter_by(done=True, owner=username).all()
-        return render_template('todo.html', title="Get It Done!",
-                               tasks=tasks, completed_tasks=completed_tasks)'''
 
 '''----------------------------------------------------------'''
 

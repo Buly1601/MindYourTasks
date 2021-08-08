@@ -6,8 +6,7 @@
 
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
-        <link rel="icon" href="{{ url_for('static', filename='img/cs.ico') }}">
+        <link href="https://fonts.googleapis.com/css2?family=Material+Icons+Outlined" rel="stylesheet">        <link rel="icon" href="{{ url_for('static', filename='img/cs.ico') }}">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
 
@@ -17,11 +16,21 @@
     </head>
 
     <body>
+    <div class="navbar">
+            <p class="name">
+                Mind Your Tasks
+            </p>
+            <div class="navbar2">
+                <button type="button"><a href="/logout">Log Out</a></button>
+                &nbsp
+            </div>
+
+    </div>
     <div class="todo">
 
 
     <main role="main" class="container extra-bottom">
-      <h1 class="mt-5">TODO List Demo App</h1>
+      <h1 class="mt-5">TODO List</h1>
 
     </main>
 
@@ -64,9 +73,8 @@
     <table class="table">
         <thead>
         <tr>
-            <th class="task-id">#</th>
             <th class="task">Task Name</th>
-            <th class="status">Status</th>
+            <th class="status">Completion</th>
             <th class="update">Remove</th>
         </tr>
         </thead>
@@ -74,23 +82,21 @@
         <tbody>
         {% for item in tasks %}
             <tr>
-                <td>{{item.id}}</td>
                 <td>{{item.content}}</td>
 
-                {% if item.done %} <strike> {% endif %}{{ item.content }} {% if item.done %} </strike>{% endif %}
+                <!--{% if item.done %} <strike> {% endif %}{{ item.content }} {% if item.done %} </strike>{% endif %}-->
 
                 {% if not item.done %}
-                    <td><button type="button" class="btn btn-outline-warning btn-sm state" data-source="{{item.id}}">{{item.status}}</button></td>
+                    <td><a href="/done/{{ item.id }}"  class="material-icons-outlined">check_box_outline_blank</a></td>
                 {%endif%}
                 {% if item.done %}
-                    <td><button type="button" class="btn btn-outline-secondary btn-sm state" data-source="{{item.id}}">{{item.status}}</button></td>
-                {%endif%}
-                {% if item.status == "Complete" %}
-                    <td><button type="button" class="btn btn-outline-success btn-sm state" data-source="{{item.id}}">{{item.status}}</button></td>
+                    <td><a href="/done/{{ item.id }}"  class="material-icons-outlined">check_box</a></td>
                 {%endif%}
 
 
-                <td><a href="/delete/{{ item.id }}" class="btn btn-outline-secondary btn-sm remove" type="button"><i class="fa fa-trash fa-1" aria-hidden="true"></i></a></td>
+                <td><a href="/delete/{{ item.id }}"  class="material-icons-outlined">delete</a></td>
+
+                <!--<td><a href="/delete/{{ item.id }}" class="btn btn-outline-secondary btn-sm remove" type="button"><i class="fa fa-trash fa-1" aria-hidden="true"></i></a></td>-->
             </tr>
         {% endfor %}
 
@@ -102,7 +108,7 @@
 
     <footer class="footer">
       <div class="container">
-            <p class="text-muted"><small>App developed for CS411 UIUC by @tcheng10</small></p>
+            <p class="text-muted"><small>Icon made by Freepikfrom www.flaticon.com </small></p>
       </div>
     </footer>
   </body>
@@ -110,6 +116,5 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
-    <script src="{{ url_for('static', filename='script/modal.js') }}"></script>
 
 </html>
