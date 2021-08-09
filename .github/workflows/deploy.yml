@@ -1,0 +1,44 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: "Deploy to AWS EC2 Virtual Machine"
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/deploy-key.pem
+          chmod 600 ~/.ssh/deploy-key.pem
+          cat >>~/.ssh/config <<END
+          Host my-vm
+            HostName $SSH_IP
+            User $SSH_USER
+            IdentityFile ~/.ssh/deploy-key.pem 
+            StrictHostKeyChecking no
+          END
+          curl -s -X POST "${{ secrets.DISCORD_WEBHOOK }}" -d "content=  SSH Successful :computer: "
+        env:
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_IP: ${{ secrets.SSH_IP }}
+
+      - name: ssh failed
+        if: ${{ failure() }}
+        run:  curl -s -X POST "${{ secrets.DISCORD_WEBHOOK }}" -d "content=  SSH ERROR"
+      
+      - name: Deploy site
+        run: ssh my-vm 'cd ${{ secrets.PROJECT_ROOT }} &&  git fetch && git reset --hard origin/master  && docker-compose down && docker image prune -f && docker-compose up -d --build && echo $(docker-compose ps) && curl -s -X POST "${{ secrets.DISCORD_WEBHOOK }}" -d "content=🚀 Deployment Successful"  '
+      
+      - name: Deploy failed
+        if: ${{ failure() }}
+        run:  curl -s -X POST "${{ secrets.DISCORD_WEBHOOK }}" -d "content=  DEPLOY ERROR"
+      
+      - name: change uses
+        uses: actions/checkout@v2

@@ -16,7 +16,7 @@ with app.app_context():
     def main():
         """
         Returns the main page of the app, where basic info and options as well as contact
-        is provided 
+        is provided
         """
         return render_template("index.html", title="Intro Screen", url=os.getenv("URL"))
 
@@ -31,14 +31,14 @@ with app.app_context():
         elif error == "confPassword":
             return "Passwords must match."
 
-    @app.route("/register", methods=["GET","POST"])
+    @app.route("/register", methods=["GET", "POST"])
     def register():
         """
         Regiters into db the new user with username and  hashes with sha-21 the password
         """
-        
+
         if request.method == "POST":
-            dab = db.get_db() 
+            dab = db.get_db()
             username = request.form.get("username")
             password = request.form.get("password")
             confPassword = request.form.get("confPassword")
@@ -50,27 +50,38 @@ with app.app_context():
                 error = error_caller("password")
             if password != confPassword:
                 error = error_caller("confPassword")
-            elif dab.execute(
-                "SELECT * FROM user_info WHERE Username = ?", (username,)
-            ).fetchone() != None:
+            elif (
+                dab.execute(
+                    "SELECT * FROM user_info WHERE Username = ?", (username,)
+                ).fetchone()
+                != None
+            ):
                 error = "Username already exists"
 
             if error == None:
                 dab.execute(
                     "INSERT INTO user_info (Username, Password) VALUES (?, ?)",
-                    (username, generate_password_hash(password),))
+                    (
+                        username,
+                        generate_password_hash(password),
+                    ),
+                )
                 dab.commit()
-                
-                return redirect(url_for('login'))
+
+                return redirect(url_for("login"))
 
             else:
                 flash(error)
-                return render_template("register.html", title="Register", url=os.getenv("URL"))
+                return render_template(
+                    "register.html", title="Register", url=os.getenv("URL")
+                )
 
         else:
-            return render_template("register.html", title="Register", url=os.getenv("URL"))
+            return render_template(
+                "register.html", title="Register", url=os.getenv("URL")
+            )
 
-    @app.route("/login", methods=["GET","POST"])
+    @app.route("/login", methods=["GET", "POST"])
     def login():
         """
         Checks for input and when given, checks for the information in the database
@@ -78,9 +89,9 @@ with app.app_context():
         if request.method == "POST":
             dab = db.get_db()
             username = request.form.get("username")
-            password = request.form.get("password")        
+            password = request.form.get("password")
             error = None
-            
+
             if not username:
                 error = error_caller("username")
             elif not password:
@@ -93,14 +104,16 @@ with app.app_context():
 
             if not user_:
                 error = "Nonexistent or incorrect username"
-            elif not check_password_hash(user_["Password"],password):
+            elif not check_password_hash(user_["Password"], password):
                 error = "Incorrect password"
 
             if error:
                 flash(error)
-                return render_template("login.html", title="Login", url=os.getenv("URL"))
-        
-            return redirect(url_for('todo'))
+                return render_template(
+                    "login.html", title="Login", url=os.getenv("URL")
+                )
+
+            return redirect(url_for("todo"))
 
         else:
             return render_template("login.html", title="Login", url=os.getenv("URL"))
@@ -111,13 +124,13 @@ with app.app_context():
         Health function for life checking
         """
         return "Healthy as it should."
-    
+
     @app.route("/todo")
     def todo():
         """
         Health function for life checking
         """
-        return render_template('todo.html', title="To Do", url=os.getenv("URL"))
+        return render_template("todo.html", title="To Do", url=os.getenv("URL"))
 
 
 if __name__ == "__main__":
