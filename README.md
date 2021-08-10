@@ -6,7 +6,7 @@ You just have to create your account and keep adding task to your "To Do" list, 
 ![Register Page](app/static/images/registerPage.JPG)  
 ![To Do Page](app/static/images/todoPage.jpg)  
 Try it out [here!](https://mindyourtasks.tech)  
-## What is using?
+## Tech stack
 For the development and deployment of this app we use:
  - AWS
  - CSS
@@ -50,21 +50,49 @@ flask run
 ```
 to see the app running go to your web browser and search for **localhost:5000** or **127.0.0.1:5000**
 the reason why we add the *:5000* is because our application is running on port 5000 
-## Files
+## Architecture
 ### app Folder
  - Files responsable of routing, creating our db models. 
  - Templates folder that contains the HTML files.
  - Static folder that contains the css and assets
+### Dockerfile
+Gives the instructions so Docker can build the image
+### docker-compose.yml
+Defines and runs our multi-container application. Allows to create and start the services.
 ### env Folder
 Python environment
+### entrypoint.sh
+shell script that is runned by the Dockerfile and runs wsgi.py on port 80
 ### .gitignore
 Files we don´t want to be upload to this repository
 ### requirments.txt 
 Python libraries necesary for running this app correctly
-### docker-compose.yml
+### user_conf.d/nginx-conf.conf
+Contains NGINX configuration
+### wsgi.py
+Runs our flask application
 
 # ABOUT US 
+
 | Derya       | Buly        | Gina          |  
 |    :----:   |    :----:   |    :----:   |  
 |![Hi!](app/static/images/derya.jpg)      | ![Hi!](app/static/images/buly.jpg)      | ![Hi!](app/static/images/gina.jpg)    |  
 | lil bio    | lil bio    | lil bio    |  
+
+
+# DO YOU WANT TO CONTRIBUTE TO THIS REPOSITORY? 
+If you want to contribute to this project you have to:
+- Fork this repository
+- Clone your respository to your local machine
+- Add this respository as a remote.
+- create a new branch using 
+    ```console
+    git switch -c name_branch
+    ```
+- Do your changes! Remember to check your identation using black and keeping the style of the rest of this project (HTML in app/templates, css in app/static/css, etc.)
+- Test if it still runs with docker and if you are able to see your changes locally
+- Add or change this documentation to add your changes.
+- Do a single commit and push your changes to your repository
+- From your fork open a pull resquest to the original repo.
+- You have done your pull request to Mind Your Tasks! We will try to give you an answer as soon as posible.
+Please remember to be kind with each other, violence of any kind is not welcome in Mind Your Task
