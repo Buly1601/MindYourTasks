@@ -1,27 +1,52 @@
 import os
-import sqlite3
 from flask import Flask, render_template, request, redirect, url_for, flash, Response, session
-from flask import Flask, render_template, session
 from werkzeug.security import generate_password_hash, check_password_hash
-from . import db, todo_helper
 from flask_sqlalchemy import SQLAlchemy
-import json
+from flask_migrate import Migrate
 
-app = Flask(__name__)
+'''app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://{user}:{passwd}@{host}:{port}/{table}'.format(
+    user=os.getenv('POSTGRES_USER'),
+    passwd=os.getenv('POSTGRES_PASSWORD'),
+    host=os.getenv('POSTGRES_HOST'),
+    port=5432,
+    table=os.getenv('POSTGRES_DB'))
 
-db.init_app(app)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 app.config["DATABASE"] = os.path.join(os.getcwd(), "flask.sqlite")
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///b.sqlite'
+'''
+
+app = Flask(__name__)
+app.config["DATABASE"] = os.path.join(os.getcwd(), "flask.sqlite")
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///n.sqlite'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
-d = SQLAlchemy(app)
+'''class UserModel(db.Model):
+    __tablename__ = "users"
 
-class Task(d.Model):
-    id = d.Column(d.Integer, primary_key=True)
-    content = d.Column(d.Text)
-    done = d.Column(d.Boolean, default=False)
-    owner_id = d.Column(d.Integer, d.ForeignKey('user.id'))
+    username = db.Column(db.String(), primary_key=True)
+    password = db.Column(db.String())
+
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
+
+    def __repr__(self):
+        return f"<User {self.username}>"
+'''
+
+class Task(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text)
+    done = db.Column(db.Boolean, default=False)
+    owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     #owner = d.Column(d.Text, nullable=False)
 
     def __init__(self, content, owner):
@@ -33,19 +58,49 @@ class Task(d.Model):
         return '<Content %s>' % self.owner
 
 
-class User(d.Model):
+class User(db.Model):
+    #__tablename__ = "users"
 
-    id = d.Column(d.Integer, primary_key=True)
-    username = d.Column(d.String(120))
-    password = d.Column(d.String(120))
-    tasks = d.relationship('Task', backref='owner')
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(120))
+    password = db.Column(db.String(120))
+    level = db.Column(db.Integer)
+    name = db.Column(db.Text)
+    type = db.Column(db.Text)
+    health = db.Column(db.Integer)
+    hunger = db.Column(db.Integer)
+    point = db.Column(db.Integer)
+    #tasks_id = db.Column(db.ForeignKey(Task.id))
+    tasks = db.relationship(Task, backref='owner')
 
     def __init__(self, username, password):
         self.username = username
         self.password = password
+        self.level = 0
+        self.name = "Pretzel"
+        self.type = "cat"
+        self.hunger = 100
+        self.health = 100
+        self.point = 0
+
+'''class PostModel(db.Model):
+    __tablename__ = "post"
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    date_created = db.Column(db.DateTime, default=datetime.utcnow)
+    like_count = db.Column(db.Integer, default=0)
+    img = db.Column(db.Text, nullable=False)
+    img_name = db.Column(db.Text, nullable=False)
+    img_mimetype = db.Column(db.Text, nullable=False)'''
 
 
-d.create_all()
+db.create_all()
+#db.session.add(Task(paths=[DomainPath(), DomainPath()]))
+#db.session.commit()
+
+#d.create_all() do flask db init instead
 
 with app.app_context():
     @app.route("/")
@@ -76,7 +131,6 @@ with app.app_context():
         """
 
         if request.method == "POST":
-            dab = db.get_db()
             username = request.form.get("username")
             password = request.form.get("password")
             confPassword = request.form.get("confPassword")
@@ -88,21 +142,17 @@ with app.app_context():
                 error = error_caller("password")
             if password != confPassword:
                 error = error_caller("confPassword")
-            elif dab.execute(
-                    "SELECT * FROM user_info WHERE Username = ?", (username,)
-            ).fetchone() != None:
-                error = "Username already exists"
+            elif User.query.filter_by(username=username).first() is not None:
+                error = f"User {username} already exists"
+                print(error, "ALL CLEAR HERE---")
 
             if error == None:
-                dab.execute(
-                    "INSERT INTO user_info (Username, Password) VALUES (?, ?)",
-                    (username, generate_password_hash(password),))
-                dab.commit()
-                new_user = User(username, password)
-                d.session.add(new_user)
-                d.session.commit()
-
+                new_username = User(username, generate_password_hash(password))
+                db.session.add(new_username)
+                db.session.commit()
+                #return f"User {username} created successfully"
                 return redirect(url_for('login'))
+
             else:
                 flash(error)
                 return render_template("register.html", title="Register", url=os.getenv("URL"))
@@ -117,12 +167,9 @@ with app.app_context():
         Checks for input and when given, checks for the information in the database
         """
         if request.method == "POST":
-            dab = db.get_db()
             username = request.form.get("username")
             password = request.form.get("password")
             error = None
-
-
 
             if not username:
                 error = error_caller("username")
@@ -130,28 +177,22 @@ with app.app_context():
                 error = error_caller("password")
 
             # check for the user in the database
-            user_ = dab.execute(
-                "SELECT * FROM user_info WHERE Username = ?", (username,)
-            ).fetchone()
+            user_ = User.query.filter_by(username=username).first()
 
             if not user_:
                 error = "Nonexistent or incorrect username"
-            elif not check_password_hash(user_["Password"], password):
+            elif not check_password_hash(user_.password, password):
                 error = "Incorrect password"
 
             if error:
                 flash(error)
                 return render_template("login.html", title="Login", url=os.getenv("URL"))
-
-            user = User.query.filter_by(username=username).first()
-            if user and user.password == password:
-                session['username'] = username
-                flash("Logged in")
-
+            session["username"] = username
             return redirect(url_for('todo'))
 
         else:
             return render_template("login.html", title="Login", url=os.getenv("URL"))
+
 
 
     @app.route('/logout')
@@ -192,8 +233,8 @@ with app.app_context():
         username = session['username']
         owner = User.query.filter_by(username=username).first()
         new_task = Task(content, owner)
-        d.session.add(new_task)
-        d.session.commit()
+        db.session.add(new_task)
+        db.session.commit()
 
         return redirect(url_for('todo'))
 
@@ -204,8 +245,8 @@ with app.app_context():
         if not task:
             return redirect('/')
 
-        d.session.delete(task)
-        d.session.commit()
+        db.session.delete(task)
+        db.session.commit()
         return redirect(url_for('todo'))
 
 
@@ -217,12 +258,210 @@ with app.app_context():
             return redirect('/')
         if task.done:
             task.done = False
+        #after resolving add points to the user
         else:
             task.done = True
 
-        d.session.commit()
+        db.session.commit()
         return redirect(url_for('todo'))
 
 
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port="5000", debug=False)
+
+    '''
+        @app.route("/register", methods=["GET", "POST"])
+        def register():
+            """
+            Regiters into db the new user with username and  hashes with sha-21 the password
+            """
+
+            if request.method == "POST":
+                dab = db.get_db()
+                username = request.form.get("username")
+                password = request.form.get("password")
+                confPassword = request.form.get("confPassword")
+                error = None
+
+                if not username:
+                    error = error_caller("username")
+                elif not password:
+                    error = error_caller("password")
+                if password != confPassword:
+                    error = error_caller("confPassword")
+                elif dab.execute(
+                        "SELECT * FROM user_info WHERE Username = ?", (username,)
+                ).fetchone() != None:
+                    error = "Username already exists"
+
+                if error == None:
+                    dab.execute(
+                        "INSERT INTO user_info (Username, Password) VALUES (?, ?)",
+                        (username, generate_password_hash(password),))
+                    dab.commit()
+                    new_user = User(username, password)
+                    d.session.add(new_user)
+                    d.session.commit()
+
+                    return redirect(url_for('login'))
+                else:
+                    flash(error)
+                    return render_template("register.html", title="Register", url=os.getenv("URL"))
+
+            else:
+                return render_template("register.html", title="Register", url=os.getenv("URL"))
+
+
+        @app.route("/login", methods=["GET", "POST"])
+        def login():
+            """
+            Checks for input and when given, checks for the information in the database
+            """
+            if request.method == "POST":
+                dab = db.get_db()
+                username = request.form.get("username")
+                password = request.form.get("password")
+                error = None
+
+
+
+                if not username:
+                    error = error_caller("username")
+                elif not password:
+                    error = error_caller("password")
+
+                # check for the user in the database
+                user_ = dab.execute(
+                    "SELECT * FROM user_info WHERE Username = ?", (username,)
+                ).fetchone()
+
+                if not user_:
+                    error = "Nonexistent or incorrect username"
+                elif not check_password_hash(user_["Password"], password):
+                    error = "Incorrect password"
+
+                if error:
+                    flash(error)
+                    return render_template("login.html", title="Login", url=os.getenv("URL"))
+
+                user = User.query.filter_by(username=username).first()
+                if user and user.password == password:
+                    session['username'] = username
+                    flash("Logged in")
+
+                return redirect(url_for('todo'))
+
+            else:
+                return render_template("login.html", title="Login", url=os.getenv("URL"))
+
+    '''
+
+    '''
+        @app.route("/register", methods=("GET", "POST"))
+        def register():
+            if request.method == "POST":
+                username = request.form.get("username")
+                password = request.form.get("password")
+                error = None
+
+                if not username:
+                    error = "Username is required."
+                elif not password:
+                    error = "Password is required."
+                elif User.query.filter_by(username=username).first() is not None:
+                    error = f"User {username} is already registered."
+
+                if error is None:
+                    new_user = User(username, generate_password_hash(password))
+                    d.session.add(new_user)
+                    d.session.commit()
+                    message = f"User {username} created successfully"
+                    return render_template(
+                        "login.html",
+                        url=os.getenv("URL"),
+                        message=message,
+                    )
+                else:
+                    return (
+                        render_template(
+                            "login.html",
+                            url=os.getenv("URL"),
+                            message=error,
+                        ),
+                        418,
+                    )
+
+            # TODO: Return a restister page
+            return render_template(
+                "register.html", title="Register", url=os.getenv("URL"))  # noqa: E501
+
+
+        @app.route("/login", methods=("GET", "POST"))
+        def login():
+            if request.method == "POST":
+                username = request.form.get("username")
+                password = request.form.get("password")
+                error = None
+                user = User.query.filter_by(username=username).first()
+
+                if user is None:
+                    error = "Incorrect username."
+                elif not check_password_hash(user.password, password):
+                    error = "Incorrect password."
+
+                if error is None:
+                    session['username'] = username
+                    flash("Logged in")
+                    return redirect(url_for("todo"))
+                else:
+                    return (
+                        render_template(
+                            "login.html",
+                            url=os.getenv("URL"),
+                            message=error,
+                        ),
+                        418,
+                    )
+
+            # TODO: Return a login page
+            return render_template("login.html", title="Login", url=os.getenv("URL"))  # noqa: E501
+            
+            @app.route('/login', methods=['POST', 'GET'])
+    def login():
+        if request.method == 'POST':
+            username = request.form['username']
+            password = request.form['password']
+            user = User.query.filter_by(username=username).first()
+            if user and user.password == password:
+                session['username'] = username
+                flash("Logged in")
+                return redirect(url_for("todo"))
+            else:
+                flash('User password incorrect, or user does not exist', 'error')
+
+        return render_template('login.html')
+
+
+    @app.route('/register', methods=['POST', 'GET'])
+    def register():
+        if request.method == 'POST':
+            username = request.form['username']
+            password = request.form['password']
+
+
+            # TODO - validate user's data
+
+            existing_user = User.query.filter_by(username=username).first()
+            if not existing_user:
+                new_user = User(username, password)
+                d.session.add(new_user)
+                d.session.commit()
+                #session['username'] = username
+                return redirect(url_for("login"))
+            else:
+                # TODO - user better response messaging
+                return "<h1>Duplicate user</h1>"
+
+        return render_template('register.html')
+
+    '''
