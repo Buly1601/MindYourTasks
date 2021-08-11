@@ -129,7 +129,6 @@ with app.app_context():
         """
         Regiters into db the new user with username and  hashes with sha-21 the password
         """
-
         if request.method == "POST":
             username = request.form.get("username")
             password = request.form.get("password")
@@ -206,7 +205,7 @@ with app.app_context():
         Health function for life checking
         """
         return "Healthy as it should."
-
+    
 
     @app.route("/todo", methods=["GET", "POST"])
     def todo():

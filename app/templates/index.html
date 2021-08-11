@@ -1,17 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-
-    <link rel="stylesheet" href="../static/styles/style.css?v=1.0.23">
-    <link rel = "icon" href = 
-    "../static/images/bee.png" 
-    type = "image/x-icon">
-    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@1,300&display=swap" rel="stylesheet">
-
-    <title>Mind Your Tasks</title>
-</head>
-<body>
+{% extends "base.html" %} {% block content %}
     <div class="main">
         <div class="navbar">
             <p class="name">
@@ -43,7 +30,4 @@
 
         </div>
     </div>
-
-
-</body>
-</html>
+{% endblock %}
