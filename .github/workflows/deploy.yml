@@ -42,3 +42,19 @@ jobs:
       
       - name: change uses
         uses: actions/checkout@v2
+        
+      - name: Sleep for 30 seconds
+        uses: whatnick/wait-action@master
+        with:
+          time: '30s'
+          
+      - name: Test endpoints
+        shell: bash
+        run: |
+          chmod +x ./prod-test.sh
+          ./prod-test.sh
+          curl -s -X POST "${{ secrets.DISCORD_WEBHOOK }}" -d "content=  TEST CORRECT :white_check_mark: "
+        
+      - name: Endpoint failed
+        if: ${{ failure() }}
+        run:  curl -s -X POST "${{ secrets.DISCORD_WEBHOOK }}" -d "content=  Endpoint ERROR"
