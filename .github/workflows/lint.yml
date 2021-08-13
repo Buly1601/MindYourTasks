@@ -41,3 +41,6 @@ jobs:
       - name: Format failed
         if: ${{ failure() }}
         run:  curl -s -X POST "${{ secrets.DISCORD_WEBHOOKLINT }}" -d "content=  FORMAT ERROR "
+
+      - name: Test discord channel
+        run:  curl -s -X POST "${{ secrets.DISCORD_WEBHOOKLINT }}" -d "content=  I can send messages :wink:"
