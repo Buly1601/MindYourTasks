@@ -79,7 +79,7 @@ with app.app_context():
                 error = f"User {username} already exists"
                 print(error, "ALL CLEAR HERE---")
 
-            if error == None:
+            if error is None:
                 new_username = UserModel(username, generate_password_hash(password))
                 db.session.add(new_username)
                 db.session.commit()
