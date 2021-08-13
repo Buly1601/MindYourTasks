@@ -1,14 +1,36 @@
 import os
-import sqlite3
 from flask import Flask, render_template, request, redirect, url_for, flash
 from werkzeug.security import generate_password_hash, check_password_hash
-from . import db
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://{user}:{passwd}@{host}:{port}/{table}'.format(
+    user=os.getenv('POSTGRES_USER'),
+    passwd=os.getenv('POSTGRES_PASSWORD'),
+    host=os.getenv('POSTGRES_HOST'),
+    port=5432,
+    table=os.getenv('POSTGRES_DB'))
 
-db.init_app(app)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 app.config["DATABASE"] = os.path.join(os.getcwd(), "flask.sqlite")
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
+
+class UserModel(db.Model):
+    __tablename__ = 'user'
+    username = db.Column(db.String(), primary_key=True)
+    password = db.Column(db.String())
+
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
+
+    def __repr__(self):
+        return f"<User {self.username}>"
+
 
 with app.app_context():
 
@@ -38,7 +60,6 @@ with app.app_context():
         """
 
         if request.method == "POST":
-            dab = db.get_db()
             username = request.form.get("username")
             password = request.form.get("password")
             confPassword = request.form.get("confPassword")
@@ -50,25 +71,17 @@ with app.app_context():
                 error = error_caller("password")
             if password != confPassword:
                 error = error_caller("confPassword")
-            elif (
-                dab.execute(
-                    "SELECT * FROM user_info WHERE Username = ?", (username,)
-                ).fetchone()
-                != None
-            ):
-                error = "Username already exists"
+            elif UserModel.query.filter_by(username=username).first() is not None:
+                error = f"User {username} already exists"
+                print(error, "ALL CLEAR HERE---")
 
             if error == None:
-                dab.execute(
-                    "INSERT INTO user_info (Username, Password) VALUES (?, ?)",
-                    (
-                        username,
-                        generate_password_hash(password),
-                    ),
-                )
-                dab.commit()
-
-                return redirect(url_for("login"))
+                new_username = UserModel(username,generate_password_hash(password))
+                db.session.add(new_username)
+                db.session.commit()
+                return f"User {username} created successfully"
+                
+                return redirect(url_for('login'))
 
             else:
                 flash(error)
@@ -87,7 +100,6 @@ with app.app_context():
         Checks for input and when given, checks for the information in the database
         """
         if request.method == "POST":
-            dab = db.get_db()
             username = request.form.get("username")
             password = request.form.get("password")
             error = None
@@ -98,13 +110,11 @@ with app.app_context():
                 error = error_caller("password")
 
             # check for the user in the database
-            user_ = dab.execute(
-                "SELECT * FROM user_info WHERE Username = ?", (username,)
-            ).fetchone()
+            user_ = UserModel.query.filter_by(username=username).first()
 
             if not user_:
                 error = "Nonexistent or incorrect username"
-            elif not check_password_hash(user_["Password"], password):
+            elif not check_password_hash(user_.password,password):
                 error = "Incorrect password"
 
             if error:
