@@ -5,22 +5,26 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://{user}:{passwd}@{host}:{port}/{table}'.format(
-    user=os.getenv('POSTGRES_USER'),
-    passwd=os.getenv('POSTGRES_PASSWORD'),
-    host=os.getenv('POSTGRES_HOST'),
+app.config[
+    "SQLALCHEMY_DATABASE_URI"
+] = "postgresql+psycopg2://{user}:{passwd}@{host}:{port}/{table}".format(
+    user=os.getenv("POSTGRES_USER"),
+    passwd=os.getenv("POSTGRES_PASSWORD"),
+    host=os.getenv("POSTGRES_HOST"),
     port=5432,
-    table=os.getenv('POSTGRES_DB'))
+    table=os.getenv("POSTGRES_DB"),
+)
 
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 app.config["DATABASE"] = os.path.join(os.getcwd(), "flask.sqlite")
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
+
 class UserModel(db.Model):
-    __tablename__ = 'user'
+    __tablename__ = "user"
     username = db.Column(db.String(), primary_key=True)
     password = db.Column(db.String())
 
@@ -76,12 +80,12 @@ with app.app_context():
                 print(error, "ALL CLEAR HERE---")
 
             if error == None:
-                new_username = UserModel(username,generate_password_hash(password))
+                new_username = UserModel(username, generate_password_hash(password))
                 db.session.add(new_username)
                 db.session.commit()
                 return f"User {username} created successfully"
-                
-                return redirect(url_for('login'))
+
+                return redirect(url_for("login"))
 
             else:
                 flash(error)
@@ -114,7 +118,7 @@ with app.app_context():
 
             if not user_:
                 error = "Nonexistent or incorrect username"
-            elif not check_password_hash(user_.password,password):
+            elif not check_password_hash(user_.password, password):
                 error = "Incorrect password"
 
             if error:
