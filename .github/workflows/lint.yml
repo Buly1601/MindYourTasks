@@ -36,7 +36,7 @@ jobs:
         with:
           black: true
           flake8: true
-          flake8_args: "--exclude=python3-virtualenv/,migrations"
+          flake8_args: "--exclude=python3-virtualenv/,migrations,env"
 
       - name: Format failed
         if: ${{ failure() }}
