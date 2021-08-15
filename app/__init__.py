@@ -22,7 +22,7 @@ migrate = Migrate(app, db)
 app.config["DATABASE"] = os.path.join(os.getcwd(), "flask.sqlite")
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
-'''class Task(db.Model):
+"""class Task(db.Model):
     __tablename__ = 'task'
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text)
@@ -37,9 +37,11 @@ app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
     def __repr__(self):
         return '<Content %s>' % self.owner
-'''
+"""
+
+
 class UserModel(db.Model):
-    __tablename__ = 'user'
+    __tablename__ = "user"
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String())
     password = db.Column(db.String())
@@ -49,8 +51,8 @@ class UserModel(db.Model):
     health = db.Column(db.Integer)
     hunger = db.Column(db.Integer)
     point = db.Column(db.Integer)
-    #tasks_id = db.Column(db.ForeignKey(Task.id))
-   # tasks = db.relationship(Task, backref='owner')
+    # tasks_id = db.Column(db.ForeignKey(Task.id))
+    # tasks = db.relationship(Task, backref='owner')
 
     def __init__(self, username, password):
         self.username = username
@@ -113,9 +115,9 @@ with app.app_context():
                 new_username = UserModel(username, generate_password_hash(password))
                 db.session.add(new_username)
                 db.session.commit()
-               # return f"User {username} created successfully"
-                
-                return redirect(url_for('login'))
+                # return f"User {username} created successfully"
+
+                return redirect(url_for("login"))
 
             else:
                 flash(error)
