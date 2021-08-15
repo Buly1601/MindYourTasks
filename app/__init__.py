@@ -22,6 +22,7 @@ migrate = Migrate(app, db)
 app.config["DATABASE"] = os.path.join(os.getcwd(), "flask.sqlite")
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
+# fmt: off
 """class Task(db.Model):
     __tablename__ = 'task'
     id = db.Column(db.Integer, primary_key=True)
@@ -38,6 +39,7 @@ app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
     def __repr__(self):
         return '<Content %s>' % self.owner
 """
+# fmt: on
 
 
 class UserModel(db.Model):
@@ -72,16 +74,20 @@ with app.app_context():
 
     @app.route("/")
     def main():
+        # fmt: off
         """
         Returns the main page of the app, where basic info and options as well as contact
         is provided
         """
+        # fmt: on
         return render_template("index.html", title="Intro Screen", url=os.getenv("URL"))
 
     def error_caller(error):
+        # fmt: off
         """
         Reusage function to recycle code
         """
+        # fmt: on
         if error == "username":
             return "Username is required."
         elif error == "password":
@@ -91,10 +97,11 @@ with app.app_context():
 
     @app.route("/register", methods=["GET", "POST"])
     def register():
+        # fmt: off
         """
         Regiters into db the new user with username and  hashes with sha-21 the password
         """
-
+        # fmt: on
         if request.method == "POST":
             username = request.form.get("username")
             password = request.form.get("password")
@@ -132,9 +139,11 @@ with app.app_context():
 
     @app.route("/login", methods=["GET", "POST"])
     def login():
+        # fmt: off
         """
         Checks for input and when given, checks for the information in the database
         """
+        # fmt: on
         if request.method == "POST":
             username = request.form.get("username")
             password = request.form.get("password")
@@ -166,16 +175,20 @@ with app.app_context():
 
     @app.route("/health")
     def healthy():
+        # fmt: off
         """
         Health function for life checking
         """
+        # fmt: on
         return "Healthy as it should."
 
     @app.route("/todo")
     def todo():
+        # fmt: off
         """
         Health function for life checking
         """
+        # fmt: on
         return render_template("todo.html", title="To Do", url=os.getenv("URL"))
 
 
