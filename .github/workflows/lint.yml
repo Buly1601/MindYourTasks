@@ -43,4 +43,4 @@ jobs:
         run:  curl -s -X POST "${{ secrets.DISCORD_WEBHOOKLINT }}" -d "content=  FORMAT ERROR "
 
       - name: Test discord channel
-        run:  curl -s -X POST "${{ secrets.DISCORD_WEBHOOKLINT }}" -d "content=  I can send messages :wink:"
+        run:  curl -s -X POST "${{ secrets.DISCORD_WEBHOOKLINT }}" -d "content=  Lint complete :wink:"
