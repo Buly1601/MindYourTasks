@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, Response, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -34,7 +34,7 @@ app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
     def __repr__(self):
         return '<Content %s>' % self.owner
-'''
+
 class UserModel(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
@@ -62,7 +62,47 @@ class UserModel(db.Model):
     def __repr__(self):
         return f"<User {self.username}>"
 
+'''
+class Task(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text)
+    done = db.Column(db.Boolean, default=False)
+    owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    #owner = d.Column(d.Text, nullable=False)
 
+    def __init__(self, content, owner):
+        self.content = content
+        self.done = False
+        self.owner = owner
+
+    def __repr__(self):
+        return '<Content %s>' % self.owner
+
+
+class User(db.Model):
+    #__tablename__ = "users"
+
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(120))
+    password = db.Column(db.String(120))
+    level = db.Column(db.Integer)
+    name = db.Column(db.Text)
+    type = db.Column(db.Text)
+    health = db.Column(db.Integer)
+    hunger = db.Column(db.Integer)
+    point = db.Column(db.Integer)
+    #tasks_id = db.Column(db.ForeignKey(Task.id))
+    tasks = db.relationship(Task, backref='owner')
+
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
+        self.level = 0
+        self.name = "Pretzel"
+        self.type = "cat"
+        self.hunger = 100
+        self.health = 100
+        self.point = 0
 with app.app_context():
 
     @app.route("/")
@@ -102,12 +142,12 @@ with app.app_context():
                 error = error_caller("password")
             if password != confPassword:
                 error = error_caller("confPassword")
-            elif UserModel.query.filter_by(username=username).first() is not None:
+            elif User.query.filter_by(username=username).first() is not None:
                 error = f"User {username} already exists"
                 print(error, "ALL CLEAR HERE---")
 
             if error == None:
-                new_username = UserModel(username,generate_password_hash(password))
+                new_username = User(username,generate_password_hash(password))
                 db.session.add(new_username)
                 db.session.commit()
                # return f"User {username} created successfully"
@@ -137,7 +177,7 @@ with app.app_context():
                 error = error_caller("password")
 
             # check for the user in the database
-            user_ = UserModel.query.filter_by(username=username).first()
+            user_ = User.query.filter_by(username=username).first()
 
             if not user_:
                 error = "Nonexistent or incorrect username"
@@ -147,7 +187,7 @@ with app.app_context():
             if error:
                 flash(error)
                 return render_template("login.html", title="Login", url=os.getenv("URL"))
-        
+            session["username"] = username
             return redirect(url_for('todo'))
 
         else:
@@ -160,12 +200,68 @@ with app.app_context():
         """
         return "Healthy as it should."
     
-    @app.route("/todo")
+    @app.route('/logout')
+    def logout():
+        del session['username']
+        return redirect('/')
+
+    @app.route("/todo", methods=["GET", "POST"])
     def todo():
         """
         Health function for life checking
         """
-        return render_template('todo.html', title="To Do", url=os.getenv("URL"))
+
+        username = session['username']
+        owner = User.query.filter_by(username=username).first()
+
+        #tasks = Task.query.filter_by(done=False, owner=owner).all()
+        tasks = Task.query.filter_by(owner=owner).all()
+        #completed_tasks = Task.query.filter_by(done=True, owner=owner).all()
+        #tasks = Task.query.all()
+        return render_template('todo.html', tasks=tasks, url=os.getenv("URL"))
+
+
+    @app.route('/task', methods=['POST'])
+    def add_task():
+        content = request.form['content']
+        if not content:
+            return 'Error'
+
+        username = session['username']
+        owner = User.query.filter_by(username=username).first()
+        new_task = Task(content, owner)
+        db.session.add(new_task)
+        db.session.commit()
+
+        return redirect(url_for('todo'))
+
+
+    @app.route('/delete/<int:task_id>')
+    def delete_task(task_id):
+        task = Task.query.get(task_id)
+        if not task:
+            return redirect('/')
+
+        db.session.delete(task)
+        db.session.commit()
+        return redirect(url_for('todo'))
+
+
+    @app.route('/done/<int:task_id>')
+    def resolve_task(task_id):
+        task = Task.query.get(task_id)
+
+        if not task:
+            return redirect('/')
+        if task.done:
+            task.done = False
+        #after resolving add points to the user
+        else:
+            task.done = True
+
+        db.session.commit()
+        return redirect(url_for('todo'))
+
 
 
 if __name__ == "__main__":
