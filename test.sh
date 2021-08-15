@@ -15,57 +15,6 @@ elif [ ${response} = 405 ]; then
 else
         exit -1
 fi
-#ABOUT LINKS***************************************************
-echo "GET ABOUT TEST *****************************************"
-response=$(curl -s -o /dev/null -w "%{http_code}" https://mindyourtask.tech/about)
-if [ ${response} = 200 ]; then
-        echo "success"
-else
-        exit -1
-fi
-echo "POST ABOUT TEST *****************************************"
-response=$(curl -X POST -s -o /dev/null -w "%{http_code}" https://mindyourtask.tech/about)
-if [ ${response} = 200 ]; then
-        echo "success"
-elif [ ${response} = 405 ]; then
-        echo "error can´t do POST"
-else
-        exit -1
-fi
-#EXPERIENCE LINKS**********************************************
-echo "GET EXPERIENCE TEST *****************************************"
-response=$(curl -s -o /dev/null -w "%{http_code}" https://mindyourtask.tech/experience)
-if [ ${response} = 200 ]; then
-        echo "success"
-else
-        exit -1
-fi
-echo "POST EXPERIENCE TEST *****************************************"
-response=$(curl -X POST -s -o /dev/null -w "%{http_code}" https://mindyourtask.tech/experience)
-if [ ${response} = 200 ]; then
-        echo "success"
-elif [ ${response} = 405 ]; then
-        echo "error can´t do POST"
-else
-        exit -1
-fi
-#PROJECTS LINKS************************************************
-echo "GET PROJECTS TEST *****************************************"
-response=$(curl -s -o /dev/null -w "%{http_code}" https://mindyourtask.tech/projects)
-if [ ${response} = 200 ]; then
-        echo "success"
-else
-        exit -1
-fi
-echo "POST PROJECTS TEST *****************************************"
-response=$(curl -X POST -s -o /dev/null -w "%{http_code}" https://mindyourtask.tech/projects)
-if [ ${response} = 200 ]; then
-        echo "success"
-elif [ ${response} = 405 ]; then
-        echo "error can´t do POST"
-else
-        exit -1
-fi
 
 #REGISTER LINKS*************************************************
 echo "GET REGISTER TEST *****************************************"
