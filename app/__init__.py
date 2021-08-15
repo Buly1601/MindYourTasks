@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
-'''app = Flask(__name__)
+app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://{user}:{passwd}@{host}:{port}/{table}'.format(
     user=os.getenv('POSTGRES_USER'),
     passwd=os.getenv('POSTGRES_PASSWORD'),
@@ -14,17 +14,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://{user}:{passwd}@{
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
-app.config["DATABASE"] = os.path.join(os.getcwd(), "flask.sqlite")
-app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
-'''
-
-app = Flask(__name__)
-app.config["DATABASE"] = os.path.join(os.getcwd(), "flask.sqlite")
-app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///n.sqlite'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
@@ -96,7 +85,7 @@ class User(db.Model):
     img_mimetype = db.Column(db.Text, nullable=False)'''
 
 
-db.create_all()
+#db.create_all()
 #db.session.add(Task(paths=[DomainPath(), DomainPath()]))
 #db.session.commit()
 
