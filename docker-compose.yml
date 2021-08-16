@@ -31,20 +31,7 @@ services:
       - ./user_conf.d:/etc/nginx/user_conf.d
     depends_on:
       - web
-  #nginx:
-  #  container_name: nginxMYT
-  #  image: jonasal/nginx-certbot:latest
-  #  restart: unless-stopped
-  #  env_file:
-  #    - ./nginx-certbot.env
-  #  ports:
-  #    - 80:80
-  #    - 443:443
-  #  volumes:
-  #    - nginx_secrets:/etc/letsencrypt
-  #    - ./user_conf.d:/etc/nginx/user_conf.d
-  #  depends_on:
-  #    - web
+
   cadvisor:
     container_name: cadvisorMYT
     image: gcr.io/cadvisor/cadvisor:latest 
@@ -57,4 +44,3 @@ services:
 volumes:
   nginx_secrets:
   my_database:
-
