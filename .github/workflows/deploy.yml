@@ -34,7 +34,7 @@ jobs:
         run:  curl -s -X POST "${{ secrets.DISCORD_WEBHOOK }}" -d "content=  SSH ERROR"
       
       - name: Deploy site
-        run: ssh my-vm 'cd ${{ secrets.PROJECT_ROOT }} &&  git fetch && git reset --hard origin/master  && docker-compose down && docker image prune -f && docker-compose up -d --build && echo $(docker-compose ps) && curl -s -X POST "${{ secrets.DISCORD_WEBHOOK }}" -d "content=🚀 Deployment Successful"  '
+        run: ssh my-vm 'cd ${{ secrets.PROJECT_ROOT }} &&  git fetch && git reset --hard origin/main  && docker-compose down && docker image prune -f && docker-compose up -d --build && echo $(docker-compose ps) && curl -s -X POST "${{ secrets.DISCORD_WEBHOOK }}" -d "content=🚀 Deployment Successful"  '
       
       - name: Deploy failed
         if: ${{ failure() }}
