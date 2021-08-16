@@ -1,6 +1,7 @@
 {% extends "base.html" %} {% block content %}
-<h1 class="title">Register</h1>
+
 <div class="registerBox">
+    <h1 class="title">Register</h1>
     <form class="formBox" action="" method="POST">
         <label >Username</label>
         <input name="username" class="loginInput" type="email" placeholder="Username"/>
@@ -13,8 +14,8 @@
                 <p>{{ message }}</p>
             {% endfor %}
         </div>
-        <input class="inputButton" value="Register" type="submit"/>
-        <a class="links" aria-current="page" href="/login">Login</a>
+        <button  class="input_btn" type="submit" value="Register">Register</button>
+        <button class="input_btn" ><a href="/login">Login</a></button>
         
     </form>
     <img class="petImage" src="../static/images/cutecats.gif"/>
