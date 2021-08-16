@@ -159,9 +159,11 @@ with app.app_context():
                 new_username = User(username, generate_password_hash(password))
                 db.session.add(new_username)
                 db.session.commit()
-                # return f"User {username} created successfully"
 
-                return redirect(url_for("login"))
+               # return f"User {username} created successfully"
+                
+                return render_template(url_for('login'))
+
 
             else:
                 flash(error)
@@ -203,7 +205,8 @@ with app.app_context():
                     "login.html", title="Login", url=os.getenv("URL")
                 )
             session["username"] = username
-            return redirect(url_for("todo"))
+
+            return render_template(url_for('todo'))
 
         else:
             return render_template("login.html", title="Login", url=os.getenv("URL"))
@@ -217,8 +220,9 @@ with app.app_context():
 
     @app.route("/logout")
     def logout():
-        del session["username"]
-        return redirect("/")
+      del session['username']
+      return render_template('/')
+
 
     @app.route("/todo", methods=["GET", "POST"])
     def todo():
@@ -247,7 +251,10 @@ with app.app_context():
         db.session.add(new_task)
         db.session.commit()
 
-        return redirect(url_for("todo"))
+
+        return render_template(url_for('todo'))
+
+
 
     @app.route("/delete/<int:task_id>")
     def delete_task(task_id):
@@ -257,7 +264,9 @@ with app.app_context():
 
         db.session.delete(task)
         db.session.commit()
-        return redirect(url_for("todo"))
+
+        return render_template(url_for('todo'))
+
 
     @app.route("/done/<int:task_id>")
     def resolve_task(task_id):
@@ -272,7 +281,9 @@ with app.app_context():
             task.done = True
 
         db.session.commit()
-        return redirect(url_for("todo"))
+
+        return render_template(url_for('todo'))
+
 
 
 if __name__ == "__main__":
