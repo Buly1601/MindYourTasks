@@ -76,3 +76,34 @@ else
         exit -1
 fi
 exit 0
+echo "GET HEALTH *****************************************"
+response=$(curl -s -o /dev/null -w "%{http_code}"  https://mindyourtask.tech/health)
+if [ ${response} = 200 ]; then
+        echo "success"
+elif [ ${response} = 501 ]; then
+        echo "error page not implemented"
+else
+        exit -1
+fi
+exit 0
+echo "GET LOGOUT *****************************************"
+response=$(curl -s -o /dev/null -w "%{http_code}"  https://mindyourtask.tech/logout)
+if [ ${response} = 200 ]; then
+        echo "success"
+elif [ ${response} = 501 ]; then
+        echo "error page not implemented"
+else
+        exit -1
+fi
+exit 0
+cc
+echo "GET TASK *****************************************"
+response=$(curl -s -o /dev/null -w "%{http_code}" -X POST  https://mindyourtask.tech/task)
+if [ ${response} = 200 ]; then
+        echo "success"
+elif [ ${response} = 501 ]; then
+        echo "error page not implemented"
+else
+        exit -1
+fi
+exit 0
