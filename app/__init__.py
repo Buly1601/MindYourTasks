@@ -164,7 +164,6 @@ with app.app_context():
 
                 return redirect(url_for("login"))
 
-
             else:
                 flash(error)
                 return render_template(
