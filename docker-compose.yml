@@ -41,6 +41,26 @@ services:
       - /var/run:/var/run:rw 
       - /sys:/sys:ro 
       - /var/lib/docker/:/var/lib/docker:ro
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:latest
+    restart: unless-stopped
+    ports:
+      - 9090:9090
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    volumes: 
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on: 
+      - cadvisor
+  grafana:
+    image: grafana/grafana:7.3.0
+    ports:
+      - 3030:3030
+    depends_on: 
+      - prometheus
+
 volumes:
   nginx_secrets:
   my_database:
