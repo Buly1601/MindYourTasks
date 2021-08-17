@@ -162,7 +162,7 @@ with app.app_context():
 
                # return f"User {username} created successfully"
                 
-                return render_template(url_for('login'))
+                return redirect(url_for('login'))
 
 
             else:
@@ -206,7 +206,7 @@ with app.app_context():
                 )
             session["username"] = username
 
-            return render_template(url_for('todo'))
+            return redirect(url_for('login'))
 
         else:
             return render_template("login.html", title="Login", url=os.getenv("URL"))
@@ -221,7 +221,7 @@ with app.app_context():
     @app.route("/logout")
     def logout():
       del session['username']
-      return render_template('/')
+      return redirect('/')
 
 
     @app.route("/todo", methods=["GET", "POST"])
@@ -252,7 +252,7 @@ with app.app_context():
         db.session.commit()
 
 
-        return render_template(url_for('todo'))
+        return redirect(url_for('todo'))
 
 
 
@@ -265,7 +265,7 @@ with app.app_context():
         db.session.delete(task)
         db.session.commit()
 
-        return render_template(url_for('todo'))
+        return redirect(url_for('todo'))
 
 
     @app.route("/done/<int:task_id>")
@@ -282,7 +282,7 @@ with app.app_context():
 
         db.session.commit()
 
-        return render_template(url_for('todo'))
+        return redirect(url_for('todo'))
 
 
 
