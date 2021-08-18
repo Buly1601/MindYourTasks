@@ -71,10 +71,12 @@ class UserModel(db.Model):
 
 
 class Task(db.Model):
+    __tablename__ = "tasks"
+
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text)
     done = db.Column(db.Boolean, default=False)
-    owner_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    owner_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     # owner = d.Column(d.Text, nullable=False)
 
     def __init__(self, content, owner):
@@ -87,7 +89,7 @@ class Task(db.Model):
 
 
 class User(db.Model):
-    # __tablename__ = "users"
+    __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(120))
@@ -110,6 +112,9 @@ class User(db.Model):
         self.hunger = 100
         self.health = 100
         self.point = 0
+
+    def __repr__(self):
+        return f"<User {self.username}>"
 
 
 with app.app_context():
@@ -144,6 +149,8 @@ with app.app_context():
             password = request.form.get("password")
             confPassword = request.form.get("confPassword")
             error = None
+
+            print(username, password, confPassword)
 
             if not username:
                 error = error_caller("username")
@@ -233,9 +240,16 @@ with app.app_context():
 
         # tasks = Task.query.filter_by(done=False, owner=owner).all()
         tasks = Task.query.filter_by(owner=owner).all()
-        # completed_tasks = Task.query.filter_by(done=True, owner=owner).all()
-        # tasks = Task.query.all()
-        return render_template("todo.html", tasks=tasks, url=os.getenv("URL"))
+        completed_tasks = Task.query.filter_by(done=True, owner=owner).all()
+        tasks = Task.query.all()
+
+        attributes = {
+            "Health": owner.health,
+            "Hunger": owner.hunger,
+            "Level": owner.level,
+        }
+
+        return render_template("todo.html", url=os.getenv("URL"))
 
     @app.route("/task", methods=["POST"])
     def add_task():
