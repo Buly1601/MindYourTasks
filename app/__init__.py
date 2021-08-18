@@ -238,17 +238,17 @@ with app.app_context():
         username = session["username"]
         owner = User.query.filter_by(username=username).first()
 
-        #tasks = Task.query.filter_by(done=False, owner=owner).all()
+        # tasks = Task.query.filter_by(done=False, owner=owner).all()
         tasks = Task.query.filter_by(owner=owner).all()
         completed_tasks = Task.query.filter_by(done=True, owner=owner).all()
         tasks = Task.query.all()
-        
+
         attributes = {
             "Health": owner.health,
             "Hunger": owner.hunger,
-            "Level": owner.level
+            "Level": owner.level,
         }
-        
+
         return render_template("todo.html", url=os.getenv("URL"))
 
     @app.route("/task", methods=["POST"])
