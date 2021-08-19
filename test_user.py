@@ -14,4 +14,4 @@ def test_new_user():
     assert user.point == 0
     
 if __name__ == "__main__":
-    pytest.test_new_user()
+    pytest.new_user()
