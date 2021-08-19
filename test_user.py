@@ -14,8 +14,3 @@ def test_new_user():
     assert user.point == 0
 
 
-def test_new_task():
-    task = Task("this is my tast", "patkennedy79@gmail.com")
-    assert task.content == "this is my tast"
-    assert task.done == False
-    assert task.owner == "patkennedy79@gmail.com"
