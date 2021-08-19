@@ -1,0 +1,36 @@
+name: Lint
+on:
+  push:
+    branches-ignore:
+      - main
+jobs:
+  run-pytest:
+    name: Run pytest
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.9
+
+      - name: Set up Python failed
+        if: ${{ failure() }}
+        run:  curl -s -X POST "${{ secrets.DISCORD_WEBHOOKLINT }}" -d "content=  SET UP PYTHON ERROR"
+
+      - name: Install pytest
+        run: pip install pytest==2.9.1 
+
+      - name: Install Python failed
+        if: ${{ failure() }}
+        run:  curl -s -X POST "${{ secrets.DISCORD_WEBHOOKLINT }}" -d "content=  INSTALL PYTHON ERROR "
+
+      - name: Python test
+        run:  py.test && curl -s -X POST "${{ secrets.DISCORD_WEBHOOKLINT }}" -d "content=  Python tested :wink:"
+
+      - name: Pytest failed
+        if: ${{ failure() }}
+        run:  curl -s -X POST "${{ secrets.DISCORD_WEBHOOKLINT }}" -d "content=  PYTEST ERROR "
