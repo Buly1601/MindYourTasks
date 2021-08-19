@@ -1,6 +1,6 @@
 from app import User
 from app import Task
-
+import pytest
 
 def test_new_user():
     user = User("patkennedy79@gmail.com", "FlaskIsAwesome")
