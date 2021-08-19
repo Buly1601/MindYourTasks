@@ -20,7 +20,7 @@ jobs:
         pip install -r requirements.txt
     - name: Test with pytest
       run: |
-        python -m pytest
+        python -m pytest test_user.py
         curl -s -X POST "${{ secrets.DISCORD_WEBHOOKLINT }}" -d "content=  TEST DONE :sparkles: "
     - name: pytest failure
       if: ${{ failure() }}

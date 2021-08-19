@@ -12,3 +12,6 @@ def test_new_user():
     assert user.hunger == 100
     assert user.health == 100
     assert user.point == 0
+    
+if __name__ == "__main__":
+    pytest.test_new_user()
