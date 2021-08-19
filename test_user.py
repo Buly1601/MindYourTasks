@@ -12,5 +12,3 @@ def test_new_user():
     assert user.hunger == 100
     assert user.health == 100
     assert user.point == 0
-
-
