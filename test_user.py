@@ -1,12 +1,8 @@
 from app import User
+from app import Task
 
 
 def test_new_user():
-    """
-    GIVEN a User model
-    WHEN a new User is created
-    THEN check the email, hashed_password, and role fields are defined correctly
-    """
     user = User("patkennedy79@gmail.com", "FlaskIsAwesome")
     assert user.username == "patkennedy79@gmail.com"
     assert user.password == "FlaskIsAwesome"
@@ -16,3 +12,10 @@ def test_new_user():
     assert user.hunger == 100
     assert user.health == 100
     assert user.point == 0
+
+
+def test_new_task():
+    task = Task("this is my tast", "patkennedy79@gmail.com")
+    assert task.content == "this is my tast"
+    assert task.done == False
+    assert task.owner == "patkennedy79@gmail.com"
