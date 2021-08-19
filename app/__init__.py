@@ -24,6 +24,8 @@ app.config[
 )
 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+CAT_PICS = os.path.join("static", "images")
+app.config['UPLOAD_FOLDER'] = CAT_PICS
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
@@ -150,8 +152,6 @@ with app.app_context():
             confPassword = request.form.get("confPassword")
             error = None
 
-            print(username, password, confPassword)
-
             if not username:
                 error = error_caller("username")
             elif not password:
@@ -160,7 +160,6 @@ with app.app_context():
                 error = error_caller("confPassword")
             elif User.query.filter_by(username=username).first() is not None:
                 error = f"User {username} already exists"
-                print(error, "ALL CLEAR HERE---")
 
             if error is None:
                 new_username = User(username, generate_password_hash(password))
@@ -241,15 +240,13 @@ with app.app_context():
         # tasks = Task.query.filter_by(done=False, owner=owner).all()
         tasks = Task.query.filter_by(owner=owner).all()
         completed_tasks = Task.query.filter_by(done=True, owner=owner).all()
-        tasks = Task.query.all()
+        # tasks = Task.query.all()
 
-        attributes = {
-            "Health": owner.health,
-            "Hunger": owner.hunger,
-            "Level": owner.level,
-        }
-
-        return render_template("todo.html", url=os.getenv("URL"))
+        idle_cat = os.path.join(app.config['UPLOAD_FOLDER'], 'idle_cat.gif')
+        happy_cat = os.path.join(app.config['UPLOAD_FOLDER'], 'happy_cat.gif')
+        angry_cat = os.path.join(app.config['UPLOAD_FOLDER'], 'angry_cat.gif')
+        
+        return render_template("todo.html", tasks=tasks, owner=owner, idle_cat=idle_cat, happy_cat=happy_cat, angry_cat=angry_cat, url=os.getenv("URL"))
 
     @app.route("/task", methods=["POST"])
     def add_task():

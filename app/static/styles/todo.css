@@ -138,3 +138,9 @@ th{
 td{
     color: lightskyblue;
 }
+
+#feed{
+    position: relative;
+    top: 40%;
+    left: 68%;
+}

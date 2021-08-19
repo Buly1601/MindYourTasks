@@ -117,15 +117,24 @@
             </thead>
 
             <tbody>
-                {% for key,value in attributes.items() %}
-                <td>{{value}}</td>
-                {% enfor %}
+                <td>{{owner.health}}</td>
+                <td>{{owner.hunger}}</td>
+                <td>{{owner.level}}</td>
             </tbody>
+            
         </table>
     </div>
 
+    <button type="submit" id="feed" value="Feed">Feed Me</button>
+
     <div class="changing_image">
-        <img class="petImage" src="../static/images/idle_cat.gif" />
+        {% if owner.health < 80 %}
+            <img class="petImage" src="{{ angry_cat }}" />
+        {% endif %}
+
+        {% if owner.health == 100 %}
+            <img class="petImage" src="{{ idle_cat }}" />
+        {% endif %}
     </div>
   </body>
 
