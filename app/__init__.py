@@ -38,6 +38,7 @@ class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text)
     done = db.Column(db.Boolean, default=False)
+    start = db.Column(db.Float)
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     # owner = d.Column(d.Text, nullable=False)
@@ -46,6 +47,7 @@ class Task(db.Model):
         self.content = content
         self.done = False
         self.owner = owner
+        self.start = 0
 
     def __repr__(self):
         return '<Content %s>' % self.owner
@@ -64,7 +66,8 @@ class User(db.Model):
     hunger = db.Column(db.Integer)
     point = db.Column(db.Integer)
     allpoints = db.Column(db.Integer)
-    status = db.Column(db.Boolean, default=True)
+
+    #status = db.Column(db.Boolean, default=True)
     # tasks_id = db.Column(db.ForeignKey(Task.id))
     tasks = db.relationship(Task, backref='owner')
 
@@ -79,6 +82,7 @@ class User(db.Model):
         self.point = 0
         self.allpoints = 0
         self.status = True
+
 
 
 '''class PostModel(db.Model):
@@ -218,6 +222,14 @@ with app.app_context():
 
         # tasks = Task.query.filter_by(done=False, owner=owner).all()
         tasks = Task.query.filter_by(owner=owner).all()
+        if owner.hunger == 0:
+            if owner.health == 5:
+                owner.level = 0
+                owner.point = 0
+                owner.hunger = 100
+                owner.health = 100
+            else:
+                owner.health -= 5
         # completed_tasks = Task.query.filter_by(done=True, owner=owner).all()
         # tasks = Task.query.all()
         return render_template('todo.html', tasks=tasks, url=os.getenv("URL"))
@@ -232,16 +244,10 @@ with app.app_context():
         username = session['username']
         owner = User.query.filter_by(username=username).first()
         new_task = Task(content, owner)
+        new_task.start = time.time()
         db.session.add(new_task)
         db.session.commit()
-        if owner.hunger == 0:
-            if owner.health == 10:
-                owner.level = 0
-                owner.point = 0
-                owner.hunger = 100
-                owner.health = 100
-            else:
-                owner.health -= 10
+
 
         return redirect(url_for('todo'))
 
@@ -249,8 +255,17 @@ with app.app_context():
     @app.route('/delete/<int:task_id>')
     def delete_task(task_id):
         task = Task.query.get(task_id)
+        username = session['username']
+        owner = User.query.filter_by(username=username).first()
         if not task:
             return redirect('/')
+        if not task.done:
+            end = time.time()
+            dif = task.start - end
+            #if they delete a task not done after an hour they lose hunger
+            if dif > 3600:
+                owner.hunger -= 5
+
 
         db.session.delete(task)
         db.session.commit()
@@ -272,6 +287,12 @@ with app.app_context():
         # after resolving add points to the user
         else:
             task.done = True
+            # if they finished their task after an hour they lose health
+            end = time.time()
+            dif = task.start - end
+            # if they delete a task not done after an hour they lose hunger
+            if dif > 3600:
+                owner.hunger -= 5
             owner.point += 1
             owner.allpoints += 1
         # after owner gets to a point they level up
