@@ -33,7 +33,7 @@ services:
       - web
 
   cadvisor:
-    container_name: cadvisorMYT
+    container_name: cadvisor
     image: gcr.io/cadvisor/cadvisor:latest 
     restart: unless-stopped
     volumes: 
