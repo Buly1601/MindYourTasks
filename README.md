@@ -4,7 +4,6 @@ This is a web app developed as the final project of the Production Engineering M
 ![Main Page](app/static/images/mainPage.jpg)  
 You just have to create your account and keep adding the task to your "To Do" list, each time you finish a task you will be rewarded with coins you can use to buy food for your pet, and the more tasks you complete, the higher your level will be. Once you reach certain levels, you can choose a new pet.  
 ![Register Page](app/static/images/registerPage.JPG)  
-![To Do Page](app/static/images/todoPage.jpg)  
 ### App Walkthrough GIF
 
 <img src="http://g.recordit.co/TWB25ZZ4tV.gif" width=1000><br>
