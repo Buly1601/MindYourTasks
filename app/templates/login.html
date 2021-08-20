@@ -1,20 +1,23 @@
 {% extends "base.html" %} {% block content %}
-<h1 class="title">Login</h1>
-<div class="loginBox">
-  <img class="petImage" src="../static/images/cuteCat2.gif" />
-  <form class="formBoxLogin" action="" method="POST">
-    <label>Username</label>
+
+<div class="registerBox">
+  <h1 class="title" id="log_tit">Login</h1>
+  <img class="petImage" src="../static/images/cutecat2.gif" />
+  <form class="formBox" action="" method="POST">
+    <label class="login_label">Username</label>
     <input
       name="username"
       type="email"
       class="loginInput"
+      id="login_inp_st"
       placeholder="Username"
     />
-    <label>Password</label>
+    <label class="login_label">Password</label>
     <input
       name="password"
       type="password"
       class="loginInput"
+      id="login_inp_st"
       placeholder="password"
     />
     <div class="errorBox">
@@ -22,8 +25,8 @@
             <p>{{ message }}</p>
         {% endfor %}
     </div>
-    <input class="inputButton" value="Login" type="submit" />
-    <a class="links" aria-current="page" href="/register">Register</a>
+    <button class="input_btn" value="Login" type="submit">Login</button>
+    <button class="input_btn"><a href="/register">Register</a></button>
   </form>
 </div>
 
