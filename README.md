@@ -7,7 +7,7 @@ You just have to create your account and keep adding the task to your "To Do" li
 ![To Do Page](app/static/images/todoPage.jpg)  
 ### App Walkthrough GIF
 
-<img src="http://g.recordit.co/TWB25ZZ4tV.gif" width=250><br>
+<img src="http://g.recordit.co/TWB25ZZ4tV.gif" width=1000><br>
 Try it out [here!](https://mindyourtask.tech/)  
 ## Tech stack
 For the development and deployment of this app we use:
