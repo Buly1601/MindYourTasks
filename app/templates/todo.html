@@ -2,7 +2,9 @@
 
 <html>
     <head>
+
         <title>Lobby</title>
+
 
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -18,6 +20,7 @@
     <body>
     <div class="navbar">
             <p class="name">
+
                 Don´t forget to... MIND YOUR TASKS!
             </p>
             <div class="navbar2">
@@ -39,7 +42,9 @@
         <form action="/task" method="post">
         <!-- Button trigger modal -->
         <div style="text-align: right;">
+
         <button type="button" class="btn btn-outline-info btn-sm" id="btn_a" data-bs-toggle="modal" data-bs-target="#task-modal" data-source="New Task">Add Task</button>
+
         </div>
 
 
@@ -58,14 +63,16 @@
                 </div>
             </div>
             <div class="modal-footer">
+
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btn_a">Close</button>
                 <button id="submit-task" type="submit" class="btn btn-primary" id="btn_a">Save changes</button>
+
             </div>
             </div>
         </div>
         </div>
         </form>
-        
+
     </div>
 
     <!--Todo Table-->
@@ -114,19 +121,33 @@
                 <th class="health">Health</th>
                 <th class="hunger">Hunger</th>
                 <th class="level">Level</th>
+                <th class="point">Point</th>
             </thead>
 
+
             <tbody>
-                {% for key,value in attributes.items() %}
-                <td>{{value}}</td>
-                {% enfor %}
+                <td>{{owner.health}}</td>
+                <td>{{owner.hunger}}</td>
+                <td>{{owner.level}}</td>
+                <td>{{owner.point}}</td>
             </tbody>
+            
         </table>
     </div>
 
+
+
     <div class="changing_image">
-        <img class="petImage" src="../static/images/idle_cat.gif" />
+        {% if owner.health < 80 %}
+            <img class="petImage" src="{{ angry_cat }}" />
+        {% endif %}
+
+        {% if owner.health == 100 %}
+            <img class="petImage" src="{{ idle_cat }}" />
+        {% endif %}
     </div>
+    <button type="submit" class="feed"><a href="/feed">Feed Me</a></button>
+
   </body>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
