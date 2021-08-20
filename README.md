@@ -83,7 +83,7 @@ Runs our flask application
 | Derya       | Buly        | Gina          |  
 |    :----:   |    :----:   |    :----:   |  
 |<img src="app/static/images/derya.jpg" width="300" height="300" />     | <img src="app/static/images/buly.jpg" width="300" height="300" />     |  <img src="app/static/images/gina.jpg" width="300" height="300" /> |  
-| lil bio    | lil bio    | Hi! I´m a computer science student at the Tecnológico de Monterrey. I´m interested in Cybersecurity, web development, and Production Engineering.|  
+| Hello! I'm a junior computer science student at UNC Chapel Hill. I interested in Prouction Engineering and web development.    | lil bio    | Hi! I´m a computer science student at the Tecnológico de Monterrey. I´m interested in Cybersecurity, web development, and Production Engineering.|  
 
 
 # DO YOU WANT TO CONTRIBUTE TO THIS REPOSITORY? 
