@@ -1,0 +1,27 @@
+name: Testing
+on:
+  push:
+    branches-ignore:
+      - main
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Test with pytest
+      run: |
+        python -m pytest test_user.py
+        curl -s -X POST "${{ secrets.DISCORD_WEBHOOKLINT }}" -d "content=  TEST DONE :sparkles: "
+    - name: pytest failure
+      if: ${{ failure() }}
+      run:  curl -s -X POST "${{ secrets.DISCORD_WEBHOOKLINT }}" -d "content=  PYTEST ERROR "
