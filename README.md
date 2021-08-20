@@ -4,7 +4,9 @@ This is a web app developed as the final project of the Production Engineering M
 ![Main Page](app/static/images/mainPage.jpg)  
 You just have to create your account and keep adding the task to your "To Do" list, each time you finish a task you will be rewarded with coins you can use to buy food for your pet, and the more tasks you complete, the higher your level will be. Once you reach certain levels, you can choose a new pet.  
 ![Register Page](app/static/images/registerPage.JPG)  
-![To Do Page](app/static/images/todoPage.jpg)  
+### App Walkthrough GIF
+
+<img src="http://g.recordit.co/TWB25ZZ4tV.gif" width=1000><br>
 Try it out [here!](https://mindyourtask.tech/)  
 ## Tech stack
 For the development and deployment of this app we use:
@@ -16,6 +18,9 @@ For the development and deployment of this app we use:
  - NGINX
  - Python
  - SQLAlchemy
+ - Grafana
+ - Prometheus
+ - pytest
 ## Run this project local
 First, you should clone this repository running this command on your computer (if you are new to Github and want to learn more about cloning read [here]( https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository-from-github/cloning-a-repository) ):  
 ```console
@@ -51,6 +56,7 @@ flask run
 to see the app running go to your web browser and search for **localhost:5000** or **127.0.0.1:5000**
 the reason why we add the *:5000* is because our application is running on port 5000 
 ## Architecture
+![architecture](app/static/images/chart.JPG)  
 ### app Folder
  - Files responsible for routing, creating our db models. 
  - Templates folder that contains the HTML files.
@@ -76,8 +82,8 @@ Runs our flask application
 
 | Derya       | Buly        | Gina          |  
 |    :----:   |    :----:   |    :----:   |  
-|![Hi!](app/static/images/derya.jpg)      | ![Hi!](app/static/images/buly.jpg)      | ![Hi!](app/static/images/gina.jpg)    |  
-| lil bio    | lil bio    | lil bio    |  
+|<img src="app/static/images/derya.jpg" width="300" height="300" />     | <img src="app/static/images/buly.jpg" width="300" height="300" />     |  <img src="app/static/images/gina.jpg" width="300" height="300" /> |  
+| lil bio    | lil bio    | Hi! I´m a computer science student at the Tecnológico de Monterrey. I´m interested in Cybersecurity, web development, and Production Engineering.|  
 
 
 # DO YOU WANT TO CONTRIBUTE TO THIS REPOSITORY? 
