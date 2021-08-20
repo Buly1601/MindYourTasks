@@ -83,4 +83,4 @@ volumes:
   nginx_secrets:
   my_database:
   grafana:
-  prometheusa:
+  prometheus:
