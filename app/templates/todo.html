@@ -24,13 +24,7 @@
                 Don´t forget to... MIND YOUR TASKS!
             </p>
             <div class="navbar2">
-                <button type="button" class="logout_btn"><a href="/logout">Log Out</a></button>  
-              <p class="name">
-                Mind Your Tasks
-            </p>
-            <div class="navbar2">
-                <button type="button"><a href="/logout">Log Out</a></button>
-
+                <button type="button" class="logout_btn"><a href="/logout">Log Out</a></button>
                 &nbsp
             </div>
 
@@ -127,18 +121,21 @@
                 <th class="health">Health</th>
                 <th class="hunger">Hunger</th>
                 <th class="level">Level</th>
+                <th class="point">Point</th>
             </thead>
+
 
             <tbody>
                 <td>{{owner.health}}</td>
                 <td>{{owner.hunger}}</td>
                 <td>{{owner.level}}</td>
+                <td>{{owner.point}}</td>
             </tbody>
             
         </table>
     </div>
 
-    <button type="submit" id="feed" value="Feed">Feed Me</button>
+
 
     <div class="changing_image">
         {% if owner.health < 80 %}
@@ -149,6 +146,7 @@
             <img class="petImage" src="{{ idle_cat }}" />
         {% endif %}
     </div>
+    <button type="submit" class="feed"><a href="/feed">Feed Me</a></button>
 
   </body>
 

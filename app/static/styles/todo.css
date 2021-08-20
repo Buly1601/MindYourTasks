@@ -140,8 +140,8 @@ td{
     color: lightskyblue;
 }
 
-#feed{
-    position: relative;
+.feed{
+    position: absolute;
     top: 40%;
     left: 68%;
 }

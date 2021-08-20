@@ -36,53 +36,15 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 
-class Task(db.Model):
-    __tablename__ = "tasks"
-
-    id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.Text)
-    done = db.Column(db.Boolean, default=False)
-    owner_id = db.Column(db.Integer, db.ForeignKey("users.id"))
-    # owner = d.Column(d.Text, nullable=False)
-
-    def __init__(self, content, owner):
-        self.content = content
-        self.done = False
-        self.owner = owner
-
-    def __repr__(self):
-        return "<Content %s>" % self.owner
-
-
-class User(db.Model):
-    __tablename__ = "users"
-
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(120))
-    password = db.Column(db.String(120))
-    level = db.Column(db.Integer)
-    name = db.Column(db.Text)
-    type = db.Column(db.Text)
-    health = db.Column(db.Integer)
-    hunger = db.Column(db.Integer)
-    point = db.Column(db.Integer)
-    # tasks_id = db.Column(db.ForeignKey(Task.id))
-    tasks = db.relationship(Task, backref="owner")
-
-    def __init__(self, username, password):
-        self.username = username
-        self.password = password
-        self.level = 0
-        self.name = "Pretzel"
-        self.type = "cat"
-        self.hunger = 100
-        self.health = 100
-        self.point = 0
-
-    def __repr__(self):
-        return f"<User {self.username}>"
+#fake db to test
 '''
+app = Flask(__name__)
+#db.init_app(app)
+app.config["DATABASE"] = os.path.join(os.getcwd(), "flask.sqlite")
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)'''
 
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -116,7 +78,6 @@ class User(db.Model):
     hunger = db.Column(db.Integer)
     point = db.Column(db.Integer)
     allpoints = db.Column(db.Integer)
-
     #status = db.Column(db.Boolean, default=True)
     # tasks_id = db.Column(db.ForeignKey(Task.id))
     tasks = db.relationship(Task, backref='owner')
@@ -135,19 +96,9 @@ class User(db.Model):
 
 
 
-'''class PostModel(db.Model):
-    __tablename__ = "post"
 
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(200), nullable=False)
-    content = db.Column(db.Text, nullable=False)
-    date_created = db.Column(db.DateTime, default=datetime.utcnow)
-    like_count = db.Column(db.Integer, default=0)
-    img = db.Column(db.Text, nullable=False)
-    img_name = db.Column(db.Text, nullable=False)
-    img_mimetype = db.Column(db.Text, nullable=False)'''
-
-# db.create_all()
+#for testing fake db
+db.create_all()
 # db.session.add(Task(paths=[DomainPath(), DomainPath()]))
 # db.session.commit()
 
@@ -295,7 +246,7 @@ with app.app_context():
                 owner.health -= 5
         # completed_tasks = Task.query.filter_by(done=True, owner=owner).all()
         # tasks = Task.query.all()
-        return render_template('todo.html', tasks=tasks, url=os.getenv("URL"))
+        return render_template('todo.html', tasks=tasks, owner=owner, url=os.getenv("URL"))
 
 
     @app.route('/task', methods=['POST'])
@@ -367,7 +318,7 @@ with app.app_context():
         return redirect(url_for('todo'))
 
     # for feeding the pet
-    @app.route('/feed', methods=['POST'])
+    @app.route('/feed')
     def feed():
         error = None
         username = session['username']
@@ -377,8 +328,9 @@ with app.app_context():
             error = "Not enough points"
 
         else:
-            owner.point -= 5
-            owner.hunger += 5
+            if owner.hunger != 100:
+                owner.point -= 5
+                owner.hunger += 5
 
         # after resolving add points to the user
         db.session.commit()
