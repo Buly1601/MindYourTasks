@@ -1,16 +1,5 @@
 import os
-
-from flask import (
-    Flask,
-    render_template,
-    request,
-    redirect,
-    url_for,
-    flash,
-    Response,
-    session,
-)
-
+from flask import Flask, render_template, request, redirect, url_for, flash, Response, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -18,66 +7,27 @@ import math
 import time
 
 app = Flask(__name__)
-app.config[
-    "SQLALCHEMY_DATABASE_URI"
-] = "postgresql+psycopg2://{user}:{passwd}@{host}:{port}/{table}".format(
-    user=os.getenv("POSTGRES_USER"),
-    passwd=os.getenv("POSTGRES_PASSWORD"),
-    host=os.getenv("POSTGRES_HOST"),
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://{user}:{passwd}@{host}:{port}/{table}'.format(
+    user=os.getenv('POSTGRES_USER'),
+    passwd=os.getenv('POSTGRES_PASSWORD'),
+    host=os.getenv('POSTGRES_HOST'),
     port=5432,
-    table=os.getenv("POSTGRES_DB"),
-)
+    table=os.getenv('POSTGRES_DB'))
 
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-CAT_PICS = os.path.join("static", "images")
-app.config['UPLOAD_FOLDER'] = CAT_PICS
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-
-class Task(db.Model):
-    __tablename__ = "tasks"
-
-    id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.Text)
-    done = db.Column(db.Boolean, default=False)
-    owner_id = db.Column(db.Integer, db.ForeignKey("users.id"))
-    # owner = d.Column(d.Text, nullable=False)
-
-    def __init__(self, content, owner):
-        self.content = content
-        self.done = False
-        self.owner = owner
-
-    def __repr__(self):
-        return "<Content %s>" % self.owner
-
-
-class User(db.Model):
+'''class UserModel(db.Model):
     __tablename__ = "users"
 
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(120))
-    password = db.Column(db.String(120))
-    level = db.Column(db.Integer)
-    name = db.Column(db.Text)
-    type = db.Column(db.Text)
-    health = db.Column(db.Integer)
-    hunger = db.Column(db.Integer)
-    point = db.Column(db.Integer)
-    # tasks_id = db.Column(db.ForeignKey(Task.id))
-    tasks = db.relationship(Task, backref="owner")
+    username = db.Column(db.String(), primary_key=True)
+    password = db.Column(db.String())
 
     def __init__(self, username, password):
         self.username = username
         self.password = password
-        self.level = 0
-        self.name = "Pretzel"
-        self.type = "cat"
-        self.hunger = 100
-        self.health = 100
-        self.point = 0
 
     def __repr__(self):
         return f"<User {self.username}>"
@@ -131,7 +81,7 @@ class User(db.Model):
         self.health = 100
         self.point = 0
         self.allpoints = 0
-        #self.status = True
+        self.status = True
 
 
 
@@ -182,7 +132,6 @@ with app.app_context():
         """
         Regiters into db the new user with username and  hashes with sha-21 the password
         """
-
         if request.method == "POST":
             username = request.form.get("username")
             password = request.form.get("password")
@@ -197,26 +146,21 @@ with app.app_context():
                 error = error_caller("confPassword")
             elif User.query.filter_by(username=username).first() is not None:
                 error = f"User {username} already exists"
-
+                print(error, "ALL CLEAR HERE---")
 
             if error == None:
                 new_username = User(username, generate_password_hash(password))
                 db.session.add(new_username)
                 db.session.commit()
-           
+                # return f"User {username} created successfully"
                 return redirect(url_for('login'))
-
 
             else:
                 flash(error)
-                return render_template(
-                    "register.html", title="Register", url=os.getenv("URL")
-                )
+                return render_template("register.html", title="Register", url=os.getenv("URL"))
 
         else:
-            return render_template(
-                "register.html", title="Register", url=os.getenv("URL")
-            )
+            return render_template("register.html", title="Register", url=os.getenv("URL"))
 
 
     @app.route("/login", methods=["GET", "POST"])
@@ -244,14 +188,10 @@ with app.app_context():
 
             if error:
                 flash(error)
-
-                return render_template(
-                    "login.html", title="Login", url=os.getenv("URL")
-                )
+                return render_template("login.html", title="Login", url=os.getenv("URL"))
             session["username"] = username
             start = time.time()
             return redirect(url_for('todo'))
-
 
         else:
             return render_template("login.html", title="Login", url=os.getenv("URL"))
@@ -277,14 +217,11 @@ with app.app_context():
         Health function for life checking
         """
 
-
         username = session['username']
-
         owner = User.query.filter_by(username=username).first()
 
         # tasks = Task.query.filter_by(done=False, owner=owner).all()
         tasks = Task.query.filter_by(owner=owner).all()
-
         if owner.hunger == 0:
             if owner.health == 5:
                 owner.level = 0
@@ -344,7 +281,6 @@ with app.app_context():
         if not task:
             return redirect('/')
         if task.done:
-        #need to think about about what if they say done but change their  mind
             task.done = False
             owner.point -= 1
             owner.allpoints -= 1
@@ -403,8 +339,8 @@ with app.app_context():
         return redirect(url_for('todo'))
 
 
-    
-
+    def start(self):
+        """Start a new timer"""
 
 
 if __name__ == "__main__":

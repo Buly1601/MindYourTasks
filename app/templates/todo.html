@@ -2,9 +2,7 @@
 
 <html>
     <head>
-
-        <title>Lobby</title>
-
+        <title>TODO</title>
 
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -20,17 +18,10 @@
     <body>
     <div class="navbar">
             <p class="name">
-
-                Don´t forget to... MIND YOUR TASKS!
-            </p>
-            <div class="navbar2">
-                <button type="button" class="logout_btn"><a href="/logout">Log Out</a></button>  
-              <p class="name">
                 Mind Your Tasks
             </p>
             <div class="navbar2">
                 <button type="button"><a href="/logout">Log Out</a></button>
-
                 &nbsp
             </div>
 
@@ -48,9 +39,7 @@
         <form action="/task" method="post">
         <!-- Button trigger modal -->
         <div style="text-align: right;">
-
-        <button type="button" class="btn btn-outline-info btn-sm" id="btn_a" data-bs-toggle="modal" data-bs-target="#task-modal" data-source="New Task">Add Task</button>
-
+        <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#task-modal" data-source="New Task">Add Task</button>
         </div>
 
 
@@ -69,10 +58,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btn_a">Close</button>
-                <button id="submit-task" type="submit" class="btn btn-primary" id="btn_a">Save changes</button>
-
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button id="submit-task" type="submit" class="btn btn-primary">Save changes</button>
             </div>
             </div>
         </div>
@@ -115,41 +102,15 @@
 
         </tbody>
     </table>
-    
+    </div>
     </div>
 
-    
-    </div>
 
-    <div class="attributes">
-        <table class="table">
-            <thead>
-                <th class="health">Health</th>
-                <th class="hunger">Hunger</th>
-                <th class="level">Level</th>
-            </thead>
-
-            <tbody>
-                <td>{{owner.health}}</td>
-                <td>{{owner.hunger}}</td>
-                <td>{{owner.level}}</td>
-            </tbody>
-            
-        </table>
-    </div>
-
-    <button type="submit" id="feed" value="Feed">Feed Me</button>
-
-    <div class="changing_image">
-        {% if owner.health < 80 %}
-            <img class="petImage" src="{{ angry_cat }}" />
-        {% endif %}
-
-        {% if owner.health == 100 %}
-            <img class="petImage" src="{{ idle_cat }}" />
-        {% endif %}
-    </div>
-
+    <footer class="footer">
+      <div class="container">
+            <p class="text-muted"><small>Icon made by Freepikfrom www.flaticon.com </small></p>
+      </div>
+    </footer>
   </body>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>

@@ -31,56 +31,30 @@ services:
       - ./user_conf.d:/etc/nginx/user_conf.d
     depends_on:
       - web
-
+  #nginx:
+  #  container_name: nginxMYT
+  #  image: jonasal/nginx-certbot:latest
+  #  restart: unless-stopped
+  #  env_file:
+  #    - ./nginx-certbot.env
+  #  ports:
+  #    - 80:80
+  #    - 443:443
+  #  volumes:
+  #    - nginx_secrets:/etc/letsencrypt
+  #    - ./user_conf.d:/etc/nginx/user_conf.d
+  #  depends_on:
+  #    - web
   cadvisor:
     container_name: cadvisorMYT
     image: gcr.io/cadvisor/cadvisor:latest 
     restart: unless-stopped
-    volumes: 
-      - /:/rootfs:ro 
-      - /var/run:/var/run:rw 
-      - /sys:/sys:ro 
-      - /var/lib/docker/:/var/lib/docker:ro
+    #volumes: 
+    #  - /:/rootfs:ro 
+    #  - /var/run:/var/run:rw 
+    #  - /sys:/sys:ro 
+    #  - /var/lib/docker/:/var/lib/docker:ro 
 
-  prometheus:
-    container_name: prometheus
-    image: prom/prometheus:latest
-    restart: unless-stopped
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-    ports:
-      - 9090:9090
-    depends_on:
-      - cadvisor
-      - node-exporter
-
-  node-exporter:
-    container_name: node-exporter
-    image: prom/node-exporter
-    restart: unless-stopped
-    ports: 
-      - 9100:9100
-
-  grafana:
-    container_name: grafana
-    image: grafana/grafana
-    restart: unless-stopped
-    user: "1000"
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=password
-      - GF_SERVER_PROTOCOL=http
-      - GF_SERVER_ROOT_URL=https://mindyourtask.tech/grafana/
-      - GF_SERVER_DOMAIN=www.mindyourtask.tech
-    volumes:
-      - grafana:/var/lib/grafana
-    depends_on:
-      - prometheus
-    ports:
-      - 3000:3000
 volumes:
   nginx_secrets:
   my_database:
-  grafana:
-  prometheusa:
