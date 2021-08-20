@@ -93,11 +93,11 @@
 
                 <!--{% if item.done %} <strike> {% endif %}{{ item.content }} {% if item.done %} </strike>{% endif %}-->
 
-                {% if not item.done %}
-                    <td><a href="/done/{{ item.id }}"  class="material-icons-outlined">check_box_outline_blank</a></td>
-                {%endif%}
                 {% if item.done %}
                     <td><a href="/done/{{ item.id }}"  class="material-icons-outlined">check_box</a></td>
+                {%endif%}
+                {% if not item.done %}
+                    <td><a href="/done/{{ item.id }}"  class="material-icons-outlined">check_box_outline_blank</a></td>
                 {%endif%}
 
 
