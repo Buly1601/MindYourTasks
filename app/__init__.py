@@ -34,7 +34,8 @@ app.config['UPLOAD_FOLDER'] = CAT_PICS
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
-
+app.config["DATABASE"] = os.path.join(os.getcwd(), "flask.sqlite")
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
